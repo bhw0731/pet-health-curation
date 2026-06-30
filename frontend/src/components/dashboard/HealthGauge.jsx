@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion';
+
 // 종합 건강 지수 게이지 (의존성 없는 SVG 도넛 차트)
 const COLOR = {
   emerald: '#10b981',
@@ -31,7 +33,15 @@ export default function HealthGauge({ score = 0, grade }) {
         />
       </svg>
       <div className="absolute text-center">
-        <div className="text-5xl font-extrabold leading-none text-slate-900">{score}</div>
+        <motion.div
+          key={score}
+          initial={{ scale: 0.7, opacity: 0.4 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 320, damping: 16 }}
+          className="text-5xl font-extrabold leading-none text-slate-900"
+        >
+          {score}
+        </motion.div>
         <div className="mt-1 text-xs font-medium text-slate-400">/ 100 점</div>
       </div>
     </div>

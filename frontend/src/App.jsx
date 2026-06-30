@@ -6,6 +6,7 @@ import ProfileCard from './components/ProfileCard.jsx';
 import PetForm from './components/PetForm.jsx';
 import CurationResult from './components/CurationResult.jsx';
 import HistoryPanel from './components/HistoryPanel.jsx';
+import ErrorState from './components/common/ErrorState.jsx';
 import Footer from './components/Footer.jsx';
 import { requestCuration } from './lib/api.js';
 import {
@@ -25,6 +26,7 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [submitError, setSubmitError] = useState(false);
   const formRef = useRef(null);
   const resultRef = useRef(null);
 
@@ -46,6 +48,7 @@ export default function App() {
   // 폼 제출 → API 호출 → 결과 표시 (User Flow의 핵심 연결부)
   async function handleSubmit(payload) {
     setLoading(true);
+    setSubmitError(false);
     try {
       const data = await requestCuration(payload);
       setResult(data);
@@ -146,7 +149,22 @@ export default function App() {
               </div>
             )}
 
-            <PetForm onSubmit={handleSubmit} loading={loading} initialName={profile?.name} />
+            <PetForm
+              onSubmit={handleSubmit}
+              loading={loading}
+              initialName={profile?.name}
+              onError={() => setSubmitError(true)}
+            />
+
+            {submitError && (
+              <div className="mt-6">
+                <ErrorState
+                  title="결과를 불러오지 못했어요"
+                  description="네트워크 상태를 확인하고 다시 시도해 주세요."
+                  onRetry={() => setSubmitError(false)}
+                />
+              </div>
+            )}
 
             {result && (
               <div ref={resultRef} className="mt-16 scroll-mt-16">

@@ -3,20 +3,27 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { getChecklistState, saveChecklistState } from '../lib/storage.js';
 
 // 오늘의 건강 실천 체크리스트 (3개) — 모두 완료 시 축하 애니메이션
-export default function DailyChecklist({ items = [] }) {
+export default function DailyChecklist({ items = [], onProgress }) {
   const [checked, setChecked] = useState({});
 
-  useEffect(() => {
-    setChecked(getChecklistState());
-  }, []);
+  const countDone = (state) => items.filter((_, i) => state[i]).length;
 
-  const doneCount = items.filter((_, i) => checked[i]).length;
+  useEffect(() => {
+    const saved = getChecklistState();
+    setChecked(saved);
+    onProgress?.(countDone(saved));
+    // items가 바뀌면(다른 결과 보기) 진행도 재계산
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]);
+
+  const doneCount = countDone(checked);
   const allDone = items.length > 0 && doneCount === items.length;
 
   function toggle(i) {
     const next = { ...checked, [i]: !checked[i] };
     setChecked(next);
     saveChecklistState(next);
+    onProgress?.(countDone(next));
   }
 
   return (

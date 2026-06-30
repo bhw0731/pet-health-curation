@@ -1,3 +1,5 @@
+import EmptyState from './common/EmptyState.jsx';
+
 // 저장된 분석 기록(localStorage) 목록 — 다시 보기 / 삭제
 const GRADE_COLOR = {
   양호: 'text-emerald-600',
@@ -14,9 +16,10 @@ function formatDate(iso) {
 export default function HistoryPanel({ history, onView, onDelete, onClear }) {
   if (history.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-400">
-        아직 저장된 분석 기록이 없어요. 결과 화면에서 <b className="text-slate-600">내 프로필에 저장</b>을 눌러보세요.
-      </div>
+      <EmptyState
+        title="아직 저장된 분석 기록이 없어요"
+        description="결과 화면에서 ‘내 프로필에 저장’을 누르면 여기에 모여요."
+      />
     );
   }
 

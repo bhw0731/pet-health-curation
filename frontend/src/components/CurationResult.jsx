@@ -1,10 +1,12 @@
 import { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import HealthGauge from './dashboard/HealthGauge.jsx';
 import HealthRadar from './dashboard/HealthRadar.jsx';
 import StatusSummaryCard from './dashboard/StatusSummaryCard.jsx';
 import DailyChecklist from './DailyChecklist.jsx';
 import RecentLogTabs from './RecentLogTabs.jsx';
 import { saveAsImage, copyText, buildShareText, shareResult } from '../lib/share.js';
+import { gradeOf } from '../lib/grade.js';
 
 // 등급(color) → 정적 Tailwind 클래스 매핑 (동적 클래스명은 빌드에서 누락되므로 리터럴로 둠)
 const GRADE_BADGE = {
@@ -39,19 +41,37 @@ export default function CurationResult({
   onView,
 }) {
   const { summary, healthProfile, recommendations, disclaimer } = result;
-  const gradeBadge = GRADE_BADGE[healthProfile?.grade?.color] ?? GRADE_BADGE.emerald;
   const reportRef = useRef(null);
   const checklistItems = deriveChecklist(recommendations);
+
+  // ── 데이터 연동: 체크리스트 실천만큼 건강 지수가 실시간 소폭 상승 ──
+  const [completed, setCompleted] = useState(0);
+  const bonus = completed; // 실천 1건당 +1점 (최대 +3)
+  const liveHealth = healthProfile
+    ? {
+        ...healthProfile,
+        overall: Math.min(100, healthProfile.overall + bonus),
+        grade: gradeOf(Math.min(100, healthProfile.overall + bonus)),
+        // 집중 관리 영역 점수도 함께 상승 → 레이더가 차오름
+        radar: healthProfile.radar.map((r) =>
+          r.axis === healthProfile.focusArea
+            ? { ...r, score: Math.min(100, r.score + bonus * 3) }
+            : r
+        ),
+      }
+    : null;
+
+  const gradeBadge = GRADE_BADGE[liveHealth?.grade?.color] ?? GRADE_BADGE.emerald;
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 sm:p-8">
       {/* 이미지로 캡처할 리포트 영역 (액션 버튼은 제외) */}
       <div ref={reportRef} className="rounded-xl">
         {/* ── 상태 요약 카드 (블루/화이트) ── */}
-        <StatusSummaryCard summary={summary} healthProfile={healthProfile} avatar={profile?.avatar} />
+        <StatusSummaryCard summary={summary} healthProfile={liveHealth} avatar={profile?.avatar} />
 
         {/* ── 건강 지수 대시보드 (히어로) ── */}
-      {healthProfile && (
+      {liveHealth && (
         <div className="mt-8 grid gap-4 lg:grid-cols-5">
           {/* 종합 건강 지수 게이지 */}
           <div className="lg:col-span-2 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
@@ -60,14 +80,23 @@ export default function CurationResult({
               <span
                 className={`rounded-full px-2.5 py-1 text-xs font-bold ring-1 ${gradeBadge}`}
               >
-                {healthProfile.grade.label}
+                {liveHealth.grade.label}
               </span>
             </div>
             <div className="mt-4 flex flex-col items-center">
-              <HealthGauge score={healthProfile.overall} grade={healthProfile.grade} />
-              {healthProfile.focusArea && (
+              <HealthGauge score={liveHealth.overall} grade={liveHealth.grade} />
+              {bonus > 0 && (
+                <motion.span
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-2 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-600"
+                >
+                  ↑ 실천 반영 +{bonus}점
+                </motion.span>
+              )}
+              {liveHealth.focusArea && (
                 <p className="mt-3 text-center text-sm text-slate-500">
-                  지금은 <b className="text-slate-800">{healthProfile.focusArea}</b> 영역의
+                  지금은 <b className="text-slate-800">{liveHealth.focusArea}</b> 영역의
                   관리가 가장 시급해요.
                 </p>
               )}
@@ -78,7 +107,7 @@ export default function CurationResult({
           <div className="lg:col-span-3 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
             <h4 className="text-sm font-semibold text-slate-700">항목별 건강 밸런스</h4>
             <p className="text-xs text-slate-400">6개 건강 영역의 균형을 분석했어요</p>
-            <HealthRadar data={healthProfile.radar} />
+            <HealthRadar data={liveHealth.radar} />
           </div>
         </div>
       )}
@@ -100,10 +129,10 @@ export default function CurationResult({
         </div>
       </div>
 
-      {/* ── 오늘의 건강 실천 체크리스트 ── */}
+      {/* ── 오늘의 건강 실천 체크리스트 (점수 실시간 연동) ── */}
       {checklistItems.length > 0 && (
         <div className="mt-6">
-          <DailyChecklist items={checklistItems} />
+          <DailyChecklist items={checklistItems} onProgress={setCompleted} />
         </div>
       )}
 

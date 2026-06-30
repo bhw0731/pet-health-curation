@@ -44,7 +44,7 @@ function validateStep(stepKey, form) {
   return null;
 }
 
-export default function PetForm({ onSubmit, loading, initialName }) {
+export default function PetForm({ onSubmit, loading, initialName, onError }) {
   const [options, setOptions] = useState({ petTypes: [], concerns: [] });
   const [form, setForm] = useState(() => ({ ...INITIAL, petName: initialName ?? '' }));
   const [step, setStep] = useState(0);
@@ -101,7 +101,8 @@ export default function PetForm({ onSubmit, loading, initialName }) {
           setError(Object.values(e.fields)[0]);
         }
       } else {
-        setError(e.message || '잠시 후 다시 시도해 주세요.');
+        // 네트워크 등 비-유효성 오류 → 전역 에러 상태로 위임
+        onError?.(e);
       }
     }
   }
