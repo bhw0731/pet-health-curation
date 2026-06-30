@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+/* 브랜드 테마 토큰 (Tailwind v4: @theme로 커스텀 색상 정의) */
+@theme {
+  --color-brand-50: #eef6ff;
+  --color-brand-100: #d9eaff;
+  --color-brand-500: #2f7df6;
+  --color-brand-600: #1f63d6;
+  --color-brand-700: #1a4fae;
+  --font-sans: 'Pretendard', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+}
