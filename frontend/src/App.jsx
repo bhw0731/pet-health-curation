@@ -4,6 +4,11 @@ import Hero from './components/Hero.jsx';
 import Features from './components/Features.jsx';
 import ProfileCard from './components/ProfileCard.jsx';
 import CommunityPage from './components/community/CommunityPage.jsx';
+import HealthToolsPage from './pages/HealthToolsPage.jsx';
+import ShopPage from './pages/ShopPage.jsx';
+import ContentPage from './pages/ContentPage.jsx';
+import HospitalPage from './pages/HospitalPage.jsx';
+import ServicesPage from './pages/ServicesPage.jsx';
 import PetForm from './components/PetForm.jsx';
 import CurationResult from './components/CurationResult.jsx';
 import HistoryPanel from './components/HistoryPanel.jsx';
@@ -29,12 +34,29 @@ export default function App() {
   const [showHistory, setShowHistory] = useState(false);
   const [profile, setProfile] = useState(null);
   const [submitError, setSubmitError] = useState(false);
-  const [view, setView] = useState('home'); // 'home' | 'community'
+  // 'home' | 'community' | 'tools' | 'shop' | 'content' | 'hospital' | 'services'
+  const [view, setView] = useState('home');
   const formRef = useRef(null);
   const resultRef = useRef(null);
 
+  const VIEWS = ['home', 'community', 'tools', 'shop', 'content', 'hospital', 'services'];
+
+  // 해시 기반 라우팅 (딥링크 가능: /#tools 등)
+  useEffect(() => {
+    const apply = () => {
+      const h = window.location.hash.replace('#', '');
+      if (VIEWS.includes(h)) setView(h);
+      else if (h === '' ) setView('home');
+    };
+    apply();
+    window.addEventListener('hashchange', apply);
+    return () => window.removeEventListener('hashchange', apply);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function navigate(next) {
     setView(next);
+    window.location.hash = next === 'home' ? '' : next;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -116,9 +138,14 @@ export default function App() {
     <div className="min-h-screen flex flex-col">
       <Navbar view={view} onNavigate={navigate} onCtaClick={goToForm} />
 
-      {view === 'community' ? (
+      {view !== 'home' ? (
         <main className="flex-1">
-          <CommunityPage />
+          {view === 'community' && <CommunityPage />}
+          {view === 'tools' && <HealthToolsPage />}
+          {view === 'shop' && <ShopPage />}
+          {view === 'content' && <ContentPage />}
+          {view === 'hospital' && <HospitalPage />}
+          {view === 'services' && <ServicesPage onNavigate={navigate} />}
         </main>
       ) : (
         <main className="flex-1">
