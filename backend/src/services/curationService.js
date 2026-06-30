@@ -1,6 +1,7 @@
 import { getLifeStage } from '../data/curationRules.js';
 import {
   getPetTypeLabel,
+  getConcerns,
   getConcernContent,
   getStageGuide,
   getReviewsForConcern,
@@ -40,6 +41,9 @@ export function buildCuration(value) {
   // 추천에 포함된 후기 총개수 (요약 표시용)
   const totalReviews = recommendations.reduce((sum, r) => sum + r.reviews.length, 0);
 
+  // 건강 지수 프로파일 (대시보드 시각화용: 종합 점수 + 항목별 레이더)
+  const healthProfile = buildHealthProfile(concerns, stage.id);
+
   const displayName = petName || `우리 ${petLabel}`;
   const years = Math.floor(ageMonths / 12);
   const months = ageMonths % 12;
@@ -55,6 +59,7 @@ export function buildCuration(value) {
       concernCount: recommendations.length,
       reviewCount: totalReviews,
     },
+    healthProfile,
     recommendations,
     disclaimer:
       '본 정보는 커뮤니티 데이터와 일반 가이드를 기반으로 한 참고용이며, 정확한 진단은 수의사 상담이 필요합니다.',
@@ -68,4 +73,41 @@ function getPriority(stageId, concernId) {
   if (stageId === 'puppy' && ['digestion', 'skin'].includes(concernId)) score += 2;
   if (stageId === 'adult' && concernId === 'weight') score += 2;
   return score;
+}
+
+/**
+ * 건강 지수 프로파일 산출 (0~100).
+ * - 6개 건강 영역 전체에 대해 점수를 매겨 레이더 차트 데이터를 구성
+ * - 사용자가 "고민"으로 선택한 영역 = 관리가 필요한 영역 → 점수 하향
+ * - 생애주기(노령기 등)에 따라 전반적 baseline 조정
+ * 규칙 기반의 결정적(deterministic) 계산이라 같은 입력엔 같은 결과.
+ */
+function buildHealthProfile(selectedConcerns, stageId) {
+  const allConcerns = getConcerns(); // [{id,label}, ...] 6개
+  const stagePenalty = stageId === 'senior' ? 14 : stageId === 'puppy' ? 6 : 4;
+
+  const radar = allConcerns.map((c, idx) => {
+    // baseline에 약간의 항목별 변주를 줘서 레이더가 평평하지 않게
+    let score = 92 - (idx % 3) * 3 - stagePenalty;
+    const flagged = selectedConcerns.includes(c.id);
+    if (flagged) score -= 26; // 선택한 고민 = 집중 관리 필요 영역
+    score = Math.max(38, Math.min(97, score));
+    return { key: c.id, axis: c.label, score, flagged };
+  });
+
+  const overall = Math.round(radar.reduce((sum, r) => sum + r.score, 0) / radar.length);
+
+  return {
+    overall,
+    grade: gradeOf(overall),
+    radar,
+    // 가장 점수가 낮은(관리가 시급한) 영역
+    focusArea: [...radar].sort((a, b) => a.score - b.score)[0]?.axis ?? null,
+  };
+}
+
+function gradeOf(score) {
+  if (score >= 80) return { id: 'good', label: '양호', color: 'emerald' };
+  if (score >= 65) return { id: 'caution', label: '주의', color: 'amber' };
+  return { id: 'attention', label: '집중 관리', color: 'rose' };
 }
