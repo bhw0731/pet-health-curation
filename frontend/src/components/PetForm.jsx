@@ -44,9 +44,9 @@ function validateStep(stepKey, form) {
   return null;
 }
 
-export default function PetForm({ onSubmit, loading }) {
+export default function PetForm({ onSubmit, loading, initialName }) {
   const [options, setOptions] = useState({ petTypes: [], concerns: [] });
-  const [form, setForm] = useState(INITIAL);
+  const [form, setForm] = useState(() => ({ ...INITIAL, petName: initialName ?? '' }));
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1); // 슬라이드 방향
   const [error, setError] = useState(null);

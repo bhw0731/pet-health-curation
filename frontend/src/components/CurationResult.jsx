@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import HealthGauge from './dashboard/HealthGauge.jsx';
 import HealthRadar from './dashboard/HealthRadar.jsx';
 import StatusSummaryCard from './dashboard/StatusSummaryCard.jsx';
+import DailyChecklist from './DailyChecklist.jsx';
+import RecentLogTabs from './RecentLogTabs.jsx';
 import { saveAsImage, copyText, buildShareText, shareResult } from '../lib/share.js';
 
 // 등급(color) → 정적 Tailwind 클래스 매핑 (동적 클래스명은 빌드에서 누락되므로 리터럴로 둠)
@@ -11,17 +13,42 @@ const GRADE_BADGE = {
   rose: 'bg-rose-50 text-rose-700 ring-rose-200',
 };
 
-export default function CurationResult({ result, onReset, onSave, saved }) {
+// 추천 tip들에서 '오늘의 실천' 3가지를 추출
+function deriveChecklist(recommendations) {
+  const items = [];
+  for (const r of recommendations) if (r.tips?.[0]) items.push(r.tips[0]);
+  if (items.length < 3) {
+    for (const r of recommendations) {
+      for (const t of (r.tips ?? []).slice(1)) {
+        if (items.length >= 3) break;
+        if (!items.includes(t)) items.push(t);
+      }
+      if (items.length >= 3) break;
+    }
+  }
+  return items.slice(0, 3);
+}
+
+export default function CurationResult({
+  result,
+  onReset,
+  onSave,
+  saved,
+  profile,
+  history = [],
+  onView,
+}) {
   const { summary, healthProfile, recommendations, disclaimer } = result;
   const gradeBadge = GRADE_BADGE[healthProfile?.grade?.color] ?? GRADE_BADGE.emerald;
   const reportRef = useRef(null);
+  const checklistItems = deriveChecklist(recommendations);
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 sm:p-8">
       {/* 이미지로 캡처할 리포트 영역 (액션 버튼은 제외) */}
       <div ref={reportRef} className="rounded-xl">
         {/* ── 상태 요약 카드 (블루/화이트) ── */}
-        <StatusSummaryCard summary={summary} healthProfile={healthProfile} />
+        <StatusSummaryCard summary={summary} healthProfile={healthProfile} avatar={profile?.avatar} />
 
         {/* ── 건강 지수 대시보드 (히어로) ── */}
       {healthProfile && (
@@ -73,6 +100,13 @@ export default function CurationResult({ result, onReset, onSave, saved }) {
         </div>
       </div>
 
+      {/* ── 오늘의 건강 실천 체크리스트 ── */}
+      {checklistItems.length > 0 && (
+        <div className="mt-6">
+          <DailyChecklist items={checklistItems} />
+        </div>
+      )}
+
         {/* 면책 문구 */}
         <p className="mt-6 text-center text-xs text-slate-400">{disclaimer}</p>
       </div>
@@ -89,6 +123,9 @@ export default function CurationResult({ result, onReset, onSave, saved }) {
           다른 정보로 다시 받기
         </button>
       </div>
+
+      {/* ── 최근 분석한 결과 (탭 로그) ── */}
+      <RecentLogTabs history={history} onView={onView} />
     </div>
   );
 }
@@ -232,6 +269,21 @@ function RecommendationCard({ rec, rank }) {
           </li>
         ))}
       </ul>
+
+      {/* 수의사 팁 (전문가 자문 UI) */}
+      {rec.vetTip && (
+        <div className="mt-4 flex gap-3 rounded-xl border border-teal-100 bg-teal-50/70 p-4">
+          <div className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-full bg-teal-500 text-lg text-white">
+            🩺
+          </div>
+          <div>
+            <p className="text-xs font-bold text-teal-700">
+              수의사 팁 <span className="font-normal text-teal-500">· 전문가 자문</span>
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-slate-700">“{rec.vetTip}”</p>
+          </div>
+        </div>
+      )}
 
       {/* 보호자 후기 */}
       {rec.reviews?.length > 0 && (

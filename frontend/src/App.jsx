@@ -2,12 +2,21 @@ import { useEffect, useRef, useState } from 'react';
 import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
 import Features from './components/Features.jsx';
+import ProfileCard from './components/ProfileCard.jsx';
 import PetForm from './components/PetForm.jsx';
 import CurationResult from './components/CurationResult.jsx';
 import HistoryPanel from './components/HistoryPanel.jsx';
 import Footer from './components/Footer.jsx';
 import { requestCuration } from './lib/api.js';
-import { getHistory, saveToHistory, removeFromHistory, clearHistory } from './lib/storage.js';
+import {
+  getHistory,
+  saveToHistory,
+  removeFromHistory,
+  clearHistory,
+  getProfile,
+  saveProfile,
+  clearProfile,
+} from './lib/storage.js';
 
 export default function App() {
   const [result, setResult] = useState(null);
@@ -15,12 +24,14 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [profile, setProfile] = useState(null);
   const formRef = useRef(null);
   const resultRef = useRef(null);
 
-  // 최초 진입 시 저장된 기록 로드
+  // 최초 진입 시 저장된 기록/프로필 로드
   useEffect(() => {
     setHistory(getHistory());
+    setProfile(getProfile());
   }, []);
 
   const scrollToForm = () =>
@@ -74,6 +85,17 @@ export default function App() {
     scrollToForm();
   }
 
+  // 프로필 저장/삭제
+  function handleProfileSave(p) {
+    saveProfile(p);
+    setProfile(p);
+  }
+
+  function handleProfileClear() {
+    clearProfile();
+    setProfile(null);
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar onCtaClick={scrollToForm} />
@@ -92,6 +114,15 @@ export default function App() {
                 30초면 충분해요. 아래 정보를 입력하면 맞춤 가이드를 보여드릴게요.
               </p>
             </header>
+
+            {/* 나의 반려동물 프로필 */}
+            <div className="mb-6">
+              <ProfileCard
+                profile={profile}
+                onSave={handleProfileSave}
+                onClear={handleProfileClear}
+              />
+            </div>
 
             {/* 분석 기록 토글 */}
             <div className="mb-6 flex justify-end">
@@ -115,7 +146,7 @@ export default function App() {
               </div>
             )}
 
-            <PetForm onSubmit={handleSubmit} loading={loading} />
+            <PetForm onSubmit={handleSubmit} loading={loading} initialName={profile?.name} />
 
             {result && (
               <div ref={resultRef} className="mt-16 scroll-mt-16">
@@ -124,6 +155,9 @@ export default function App() {
                   onReset={handleReset}
                   onSave={handleSave}
                   saved={saved}
+                  profile={profile}
+                  history={history}
+                  onView={handleView}
                 />
               </div>
             )}

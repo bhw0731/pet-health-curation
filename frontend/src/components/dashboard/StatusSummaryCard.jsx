@@ -15,7 +15,7 @@ function Chip({ children }) {
   );
 }
 
-export default function StatusSummaryCard({ summary, healthProfile }) {
+export default function StatusSummaryCard({ summary, healthProfile, avatar }) {
   const Icon = PET_ICONS[summary.petType];
   const grade = healthProfile?.grade;
   const badge = GRADE_BADGE[grade?.color] ?? GRADE_BADGE.emerald;
@@ -31,7 +31,13 @@ export default function StatusSummaryCard({ summary, healthProfile }) {
 
           <div className="relative flex items-center gap-4">
             <div className="grid h-16 w-16 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/30">
-              {Icon ? <Icon className="h-9 w-9 text-white" /> : <span className="text-3xl">🐾</span>}
+              {avatar ? (
+                <span className="text-3xl">{avatar}</span>
+              ) : Icon ? (
+                <Icon className="h-9 w-9 text-white" />
+              ) : (
+                <span className="text-3xl">🐾</span>
+              )}
             </div>
             <div>
               <p className="text-xs font-medium text-brand-100">반려동물 프로필</p>

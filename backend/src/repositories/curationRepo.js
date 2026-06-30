@@ -25,7 +25,9 @@ export function getPetTypeLabel(petType) {
 
 export function getConcernContent(concernId) {
   const row = db
-    .prepare('SELECT title, summary, tips, community_stat FROM concern_content WHERE concern_id = ?')
+    .prepare(
+      'SELECT title, summary, tips, community_stat, vet_tip FROM concern_content WHERE concern_id = ?'
+    )
     .get(concernId);
   if (!row) return null;
   return {
@@ -33,6 +35,7 @@ export function getConcernContent(concernId) {
     summary: row.summary,
     tips: JSON.parse(row.tips),
     communityStat: row.community_stat,
+    vetTip: row.vet_tip,
   };
 }
 

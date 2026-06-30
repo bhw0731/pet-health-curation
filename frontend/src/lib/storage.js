@@ -40,3 +40,44 @@ export function removeFromHistory(id) {
 export function clearHistory() {
   localStorage.removeItem(KEY);
 }
+
+// ── 나의 반려동물 프로필 ──
+const PROFILE_KEY = 'pet:profile';
+
+export function getProfile() {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveProfile(profile) {
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  return profile;
+}
+
+export function clearProfile() {
+  localStorage.removeItem(PROFILE_KEY);
+}
+
+// ── 오늘의 건강 실천 체크 상태 (날짜별로 저장 → 매일 초기화) ──
+function todayKey() {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  return `pet:checklist:${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+export function getChecklistState() {
+  try {
+    const raw = localStorage.getItem(todayKey());
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function saveChecklistState(state) {
+  localStorage.setItem(todayKey(), JSON.stringify(state));
+}
