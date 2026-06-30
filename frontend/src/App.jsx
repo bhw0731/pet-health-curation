@@ -3,6 +3,7 @@ import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
 import Features from './components/Features.jsx';
 import ProfileCard from './components/ProfileCard.jsx';
+import CommunityPage from './components/community/CommunityPage.jsx';
 import PetForm from './components/PetForm.jsx';
 import CurationResult from './components/CurationResult.jsx';
 import HistoryPanel from './components/HistoryPanel.jsx';
@@ -28,8 +29,14 @@ export default function App() {
   const [showHistory, setShowHistory] = useState(false);
   const [profile, setProfile] = useState(null);
   const [submitError, setSubmitError] = useState(false);
+  const [view, setView] = useState('home'); // 'home' | 'community'
   const formRef = useRef(null);
   const resultRef = useRef(null);
+
+  function navigate(next) {
+    setView(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   // 최초 진입 시 저장된 기록/프로필 로드
   useEffect(() => {
@@ -100,13 +107,23 @@ export default function App() {
     setProfile(null);
   }
 
+  const goToForm = () => {
+    setView('home');
+    setTimeout(scrollToForm, 60);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar onCtaClick={scrollToForm} />
+      <Navbar view={view} onNavigate={navigate} onCtaClick={goToForm} />
 
-      <main className="flex-1">
-        <Hero onCtaClick={scrollToForm} />
-        <Features />
+      {view === 'community' ? (
+        <main className="flex-1">
+          <CommunityPage />
+        </main>
+      ) : (
+        <main className="flex-1">
+          <Hero onCtaClick={scrollToForm} />
+          <Features />
 
         <section ref={formRef} id="curation" className="bg-white py-20 scroll-mt-16">
           <div className="mx-auto max-w-5xl px-4">
@@ -188,7 +205,8 @@ export default function App() {
             )}
           </div>
         </section>
-      </main>
+        </main>
+      )}
 
       <Footer />
     </div>
