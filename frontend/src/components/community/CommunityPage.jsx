@@ -39,12 +39,12 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="bg-slate-50 py-10 sm:py-14">
+    <div className="bg-stone-50 py-10 sm:py-14">
       <div className="mx-auto max-w-4xl px-4">
         {/* 헤더 */}
         <header className="mb-6">
-          <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">반려생활 커뮤니티</h1>
-          <p className="mt-1.5 text-slate-500">
+          <h1 className="text-2xl font-extrabold text-stone-900 sm:text-3xl">반려생활 커뮤니티</h1>
+          <p className="mt-1.5 text-stone-500">
             같은 고민을 가진 보호자들과 경험을 나눠보세요 🐾
           </p>
         </header>
@@ -61,7 +61,7 @@ export default function CommunityPage() {
                 onChange={(e) => setDraft(e.target.value)}
                 rows={draft ? 3 : 1}
                 placeholder="우리 아이 이야기나 궁금한 점을 들려주세요"
-                className="w-full resize-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+                className="w-full resize-none rounded-xl border border-stone-200 px-4 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
               />
               {draft && (
                 <div className="mt-2 flex items-center justify-between">
@@ -73,7 +73,7 @@ export default function CommunityPage() {
                         className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
                           draftCat === c.id
                             ? CATEGORY_STYLE[c.id]
-                            : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
+                            : 'bg-stone-50 text-stone-400 hover:bg-stone-100'
                         }`}
                       >
                         {c.label}
@@ -97,8 +97,8 @@ export default function CommunityPage() {
               onClick={() => setActive(c.id)}
               className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
                 active === c.id
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-white text-slate-500 ring-1 ring-slate-100 hover:bg-slate-50'
+                  ? 'bg-stone-900 text-white'
+                  : 'bg-white text-stone-500 ring-1 ring-stone-100 hover:bg-stone-50'
               }`}
             >
               {c.label}
@@ -125,29 +125,29 @@ function PostCard({ post }) {
     <article className="card overflow-hidden p-5 transition hover:shadow-md">
       {/* 작성자 */}
       <div className="flex items-center gap-2">
-        <div className="grid h-8 w-8 place-items-center rounded-full bg-slate-100 text-base">
+        <div className="grid h-8 w-8 place-items-center rounded-full bg-stone-100 text-base">
           {post.avatar}
         </div>
-        <span className="text-sm font-semibold text-slate-700">{post.author}</span>
+        <span className="text-sm font-semibold text-stone-700">{post.author}</span>
         <span
           className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${CATEGORY_STYLE[post.category]}`}
         >
           {catLabel(post.category)}
         </span>
-        <span className="ml-auto text-xs text-slate-300">{post.time}</span>
+        <span className="ml-auto text-xs text-stone-300">{post.time}</span>
       </div>
 
       <div className="mt-3 flex gap-3">
         <div className="min-w-0 flex-1">
-          <h3 className="font-bold text-slate-900">{post.title}</h3>
-          <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-slate-500">
+          <h3 className="font-bold text-stone-900">{post.title}</h3>
+          <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-stone-500">
             {post.excerpt}
           </p>
         </div>
         {post.thumb && (
           <div
             className={`grid h-16 w-16 flex-shrink-0 place-items-center rounded-xl bg-gradient-to-br text-2xl ${
-              THUMBS[post.thumb.key] ?? 'from-slate-100 to-slate-200'
+              THUMBS[post.thumb.key] ?? 'from-stone-100 to-stone-200'
             }`}
           >
             {post.thumb.emoji}
@@ -156,10 +156,10 @@ function PostCard({ post }) {
       </div>
 
       {/* 반응 */}
-      <div className="mt-4 flex items-center gap-4 border-t border-slate-50 pt-3 text-sm text-slate-400">
+      <div className="mt-4 flex items-center gap-4 border-t border-stone-50 pt-3 text-sm text-stone-400">
         <button
           onClick={() => setLiked((v) => !v)}
-          className={`flex items-center gap-1 font-medium ${liked ? 'text-rose-500' : 'hover:text-slate-600'}`}
+          className={`flex items-center gap-1 font-medium ${liked ? 'text-rose-500' : 'hover:text-stone-600'}`}
         >
           {liked ? '❤️' : '🤍'} {likeCount}
         </button>

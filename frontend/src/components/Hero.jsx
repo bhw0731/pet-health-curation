@@ -9,13 +9,13 @@ export default function Hero({ onCtaClick }) {
           커뮤니티 데이터 기반 맞춤 건강 추천
         </span>
 
-        <h1 className="mt-6 text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+        <h1 className="mt-6 text-3xl sm:text-5xl font-extrabold tracking-tight text-stone-900 leading-tight">
           우리 아이에게 꼭 맞는
           <br />
           <span className="text-brand-600">건강 정보</span>를 30초 만에
         </h1>
 
-        <p className="mx-auto mt-5 max-w-2xl text-base sm:text-lg text-slate-500">
+        <p className="mx-auto mt-5 max-w-2xl text-base sm:text-lg text-stone-500">
           나이, 종, 주요 고민만 입력하세요. 수많은 보호자들의 커뮤니티 데이터를 바탕으로
           우리 아이에게 맞는 건강 가이드를 큐레이션해 드립니다.
         </p>
@@ -29,13 +29,13 @@ export default function Hero({ onCtaClick }) {
           </button>
           <a
             href="#features"
-            className="rounded-xl px-7 py-3.5 font-semibold text-slate-700 hover:bg-slate-100 transition"
+            className="rounded-xl px-7 py-3.5 font-semibold text-stone-700 hover:bg-stone-100 transition"
           >
             어떻게 작동하나요?
           </a>
         </div>
 
-        <p className="mt-6 text-sm text-slate-400">회원가입 없이 바로 체험 가능</p>
+        <p className="mt-6 text-sm text-stone-400">회원가입 없이 바로 체험 가능</p>
       </div>
     </section>
   );

@@ -24,9 +24,9 @@ export default function RecentLogTabs({ history = [], onView }) {
   const recs = res?.recommendations ?? [];
 
   return (
-    <div className="mt-8 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
-      <h4 className="text-base font-bold text-slate-900">📊 최근 분석한 결과</h4>
-      <p className="text-xs text-slate-400">저장한 기록을 탭으로 모아봤어요</p>
+    <div className="mt-8 rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
+      <h4 className="text-base font-bold text-stone-900">📊 최근 분석한 결과</h4>
+      <p className="text-xs text-stone-400">저장한 기록을 탭으로 모아봤어요</p>
 
       {/* 탭 */}
       <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
@@ -37,7 +37,7 @@ export default function RecentLogTabs({ history = [], onView }) {
             className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition ${
               active === i
                 ? 'bg-brand-500 text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
             }`}
           >
             <span>{h.label}</span>
@@ -55,20 +55,20 @@ export default function RecentLogTabs({ history = [], onView }) {
       </div>
 
       {/* 선택된 기록 요약 */}
-      <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-5">
+      <div className="mt-4 rounded-xl border border-stone-100 bg-stone-50 p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-lg font-bold text-slate-900">
+            <p className="text-lg font-bold text-stone-900">
               {entry.label}
-              <span className="ml-2 text-sm font-normal text-slate-400">
+              <span className="ml-2 text-sm font-normal text-stone-400">
                 {entry.petLabel} · {entry.ageText}
               </span>
             </p>
-            <p className="text-xs text-slate-400">{formatDate(entry.savedAt)} 분석</p>
+            <p className="text-xs text-stone-400">{formatDate(entry.savedAt)} 분석</p>
           </div>
           {entry.grade && (
             <div className="text-right">
-              <div className="text-2xl font-extrabold text-slate-900">{entry.score}점</div>
+              <div className="text-2xl font-extrabold text-stone-900">{entry.score}점</div>
               <span
                 className={`rounded-full px-2 py-0.5 text-xs font-bold ${
                   GRADE_COLOR[entry.grade] ?? ''
@@ -81,7 +81,7 @@ export default function RecentLogTabs({ history = [], onView }) {
         </div>
 
         {focus && (
-          <p className="mt-3 text-sm text-slate-600">
+          <p className="mt-3 text-sm text-stone-600">
             집중 관리 영역: <b className="text-brand-700">{focus}</b>
           </p>
         )}
@@ -90,7 +90,7 @@ export default function RecentLogTabs({ history = [], onView }) {
             {recs.map((r) => (
               <span
                 key={r.concernId}
-                className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-500 ring-1 ring-slate-100"
+                className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-stone-500 ring-1 ring-stone-100"
               >
                 {r.title}
               </span>

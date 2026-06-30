@@ -2,18 +2,18 @@
 
 /* ───────────────────────────────────────────────
    디자인 시스템 토큰 (Tailwind v4 @theme)
-   토스/배민 톤: 선명한 블루 1색 + 중립 그레이 + 넉넉한 라운드
+   톤앤매너: 따뜻한 코랄 + 크림 + 웜 그레이(stone)
    ─────────────────────────────────────────────── */
 @theme {
-  /* Primary — Brand Blue */
-  --color-brand-50: #eef6ff;
-  --color-brand-100: #d9eaff;
-  --color-brand-200: #b9d8ff;
-  --color-brand-300: #8cbdff;
-  --color-brand-400: #5b9bf8;
-  --color-brand-500: #2f7df6;
-  --color-brand-600: #1f63d6;
-  --color-brand-700: #1a4fae;
+  /* Primary — Warm Coral */
+  --color-brand-50: #fff5f0;
+  --color-brand-100: #ffe6da;
+  --color-brand-200: #ffc9b0;
+  --color-brand-300: #ffa983;
+  --color-brand-400: #fb8a5c;
+  --color-brand-500: #f26b43;
+  --color-brand-600: #db5532;
+  --color-brand-700: #b5421f;
 
   /* Radius scale */
   --radius-lg: 0.75rem;
@@ -29,8 +29,9 @@ html {
 
 body {
   font-family: var(--font-sans);
-  @apply bg-slate-50 text-slate-800 antialiased;
-  letter-spacing: -0.01em; /* 한글 가독성·토스식 밀도 */
+  background-color: #fdf7f1; /* 따뜻한 크림 배경 */
+  @apply text-stone-800 antialiased;
+  letter-spacing: -0.01em; /* 한글 가독성·밀도 */
   word-break: keep-all; /* 한글 단어 단위 줄바꿈 */
   overflow-x: hidden; /* 가로 스크롤 방지 */
 }
@@ -42,9 +43,6 @@ h1, h2, h3, h4 {
 
 /* ───────────────────────────────────────────────
    전역 마이크로 인터랙션
-   - 모든 인터랙티브 요소에 0.2초 전환
-   - 클릭(누름) 시 살짝 축소되어 '눌렀다'는 피드백
-   - 키보드 포커스 링 통일
    ─────────────────────────────────────────────── */
 @layer base {
   button,
@@ -62,7 +60,6 @@ h1, h2, h3, h4 {
       opacity 0.2s ease;
   }
 
-  /* 누름 피드백 (비활성 제외) */
   button:not(:disabled):active,
   [role='button']:active {
     transform: scale(0.97);
@@ -76,16 +73,16 @@ h1, h2, h3, h4 {
 }
 
 /* ───────────────────────────────────────────────
-   공통 컴포넌트 클래스 (재사용 토큰화)
+   공통 컴포넌트 클래스
    ─────────────────────────────────────────────── */
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold bg-brand-500 text-white shadow-lg shadow-brand-500/20 hover:bg-brand-600;
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold border border-slate-200 bg-white text-slate-700 hover:bg-slate-50;
+    @apply inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold border border-stone-200 bg-white text-stone-700 hover:bg-stone-50;
   }
   .card {
-    @apply rounded-2xl border border-slate-100 bg-white shadow-sm;
+    @apply rounded-2xl border border-stone-100 bg-white shadow-sm;
   }
 }

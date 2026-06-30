@@ -12,13 +12,13 @@ export default function HealthGauge({ score = 0, grade }) {
   const circumference = 2 * Math.PI * r;
   const pct = Math.max(0, Math.min(100, score));
   const dash = (pct / 100) * circumference;
-  const color = COLOR[grade?.color] ?? '#2f7df6';
+  const color = COLOR[grade?.color] ?? '#f26b43';
 
   return (
     <div className="relative grid place-items-center">
       <svg width="168" height="168" viewBox="0 0 160 160" className="-rotate-90">
         {/* 배경 트랙 */}
-        <circle cx="80" cy="80" r={r} fill="none" stroke="#eef2f7" strokeWidth="14" />
+        <circle cx="80" cy="80" r={r} fill="none" stroke="#f5efe9" strokeWidth="14" />
         {/* 점수 진행 */}
         <circle
           cx="80"
@@ -38,11 +38,11 @@ export default function HealthGauge({ score = 0, grade }) {
           initial={{ scale: 0.7, opacity: 0.4 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 320, damping: 16 }}
-          className="text-5xl font-extrabold leading-none text-slate-900"
+          className="text-5xl font-extrabold leading-none text-stone-900"
         >
           {score}
         </motion.div>
-        <div className="mt-1 text-xs font-medium text-slate-400">/ 100 점</div>
+        <div className="mt-1 text-xs font-medium text-stone-400">/ 100 점</div>
       </div>
     </div>
   );

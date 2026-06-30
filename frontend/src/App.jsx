@@ -155,10 +155,10 @@ export default function App() {
         <section ref={formRef} id="curation" className="bg-white py-20 scroll-mt-16">
           <div className="mx-auto max-w-5xl px-4">
             <header className="text-center mb-10">
-              <h2 className="text-3xl font-bold text-slate-900">
+              <h2 className="text-3xl font-bold text-stone-900">
                 우리 아이 맞춤 건강 큐레이션
               </h2>
-              <p className="mt-3 text-slate-500">
+              <p className="mt-3 text-stone-500">
                 30초면 충분해요. 아래 정보를 입력하면 맞춤 가이드를 보여드릴게요.
               </p>
             </header>
@@ -176,10 +176,10 @@ export default function App() {
             <div className="mb-6 flex justify-end">
               <button
                 onClick={() => setShowHistory((v) => !v)}
-                className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+                className="rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-600 hover:bg-stone-50"
               >
                 🗂 내 분석 기록 {history.length > 0 && `(${history.length})`}
-                <span className="ml-1 text-slate-400">{showHistory ? '▲' : '▼'}</span>
+                <span className="ml-1 text-stone-400">{showHistory ? '▲' : '▼'}</span>
               </button>
             </div>
 

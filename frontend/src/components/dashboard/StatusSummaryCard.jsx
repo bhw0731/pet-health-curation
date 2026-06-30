@@ -56,12 +56,12 @@ export default function StatusSummaryCard({ summary, healthProfile, avatar }) {
         <div className="p-6 md:col-span-3">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-400">종합 건강 지수</p>
+              <p className="text-xs font-semibold text-stone-400">종합 건강 지수</p>
               <div className="mt-1 flex items-end gap-1.5">
-                <span className="text-4xl font-extrabold text-slate-900">
+                <span className="text-4xl font-extrabold text-stone-900">
                   {healthProfile?.overall ?? '–'}
                 </span>
-                <span className="mb-1 text-sm font-semibold text-slate-400">/ 100점</span>
+                <span className="mb-1 text-sm font-semibold text-stone-400">/ 100점</span>
               </div>
             </div>
             {grade && (
@@ -84,7 +84,7 @@ export default function StatusSummaryCard({ summary, healthProfile, avatar }) {
           )}
 
           {summary.greeting && (
-            <p className="mt-4 text-sm leading-relaxed text-slate-600">{summary.greeting.text}</p>
+            <p className="mt-4 text-sm leading-relaxed text-stone-600">{summary.greeting.text}</p>
           )}
         </div>
       </div>

@@ -8,10 +8,10 @@ export default function EmptyState({
   mood = 'sleepy',
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-10 text-center">
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-200 bg-white px-6 py-10 text-center">
       <Mascot mood={mood} className="h-24 w-24" />
-      <p className="mt-3 text-base font-bold text-slate-700">{title}</p>
-      {description && <p className="mt-1 text-sm text-slate-400">{description}</p>}
+      <p className="mt-3 text-base font-bold text-stone-700">{title}</p>
+      {description && <p className="mt-1 text-sm text-stone-400">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
   );

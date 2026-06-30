@@ -24,12 +24,12 @@ export default function HistoryPanel({ history, onView, onDelete, onClear }) {
   }
 
   return (
-    <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-stone-100 bg-white p-4 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-slate-700">
-          내 분석 기록 <span className="text-slate-400">({history.length})</span>
+        <h4 className="text-sm font-semibold text-stone-700">
+          내 분석 기록 <span className="text-stone-400">({history.length})</span>
         </h4>
-        <button onClick={onClear} className="text-xs text-slate-400 hover:text-rose-500">
+        <button onClick={onClear} className="text-xs text-stone-400 hover:text-rose-500">
           전체 삭제
         </button>
       </div>
@@ -38,21 +38,21 @@ export default function HistoryPanel({ history, onView, onDelete, onClear }) {
         {history.map((h) => (
           <li
             key={h.id}
-            className="flex items-center gap-3 rounded-lg border border-slate-100 p-3 hover:bg-slate-50"
+            className="flex items-center gap-3 rounded-lg border border-stone-100 p-3 hover:bg-stone-50"
           >
             {h.score != null && (
-              <div className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-full bg-slate-100">
-                <span className="text-sm font-extrabold text-slate-800">{h.score}</span>
+              <div className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-full bg-stone-100">
+                <span className="text-sm font-extrabold text-stone-800">{h.score}</span>
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-slate-800">
+              <p className="truncate text-sm font-semibold text-stone-800">
                 {h.label}
-                <span className="ml-1 font-normal text-slate-400">
+                <span className="ml-1 font-normal text-stone-400">
                   · {h.petLabel} · {h.ageText}
                 </span>
               </p>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-stone-400">
                 {formatDate(h.savedAt)}
                 {h.grade && (
                   <span className={`ml-2 font-semibold ${GRADE_COLOR[h.grade] ?? ''}`}>
@@ -69,7 +69,7 @@ export default function HistoryPanel({ history, onView, onDelete, onClear }) {
             </button>
             <button
               onClick={() => onDelete(h.id)}
-              className="rounded-lg px-2 py-1.5 text-xs text-slate-300 hover:text-rose-500"
+              className="rounded-lg px-2 py-1.5 text-xs text-stone-300 hover:text-rose-500"
               aria-label="삭제"
             >
               ✕

@@ -12,11 +12,11 @@ const NAV = [
 export default function Navbar({ view = 'home', onNavigate, onCtaClick }) {
   const navCls = (active) =>
     `whitespace-nowrap transition hover:text-brand-600 ${
-      active ? 'font-bold text-brand-600' : 'text-slate-600'
+      active ? 'font-bold text-brand-600' : 'text-stone-600'
     }`;
 
   return (
-    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-slate-100">
+    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-stone-100">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
         <button onClick={() => onNavigate?.('home')} aria-label="홈으로" className="flex-shrink-0">
           {/* 데스크톱: 풀 로고 / 모바일: 마크만 */}

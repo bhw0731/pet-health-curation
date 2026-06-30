@@ -13,7 +13,7 @@ export function PawMark({ className = 'h-5 w-5' }) {
 
 export default function Logo({ className = '' }) {
   return (
-    <span className={`flex items-center gap-2 font-bold text-slate-900 ${className}`}>
+    <span className={`flex items-center gap-2 font-bold text-stone-900 ${className}`}>
       <span className="grid h-8 w-8 place-items-center rounded-xl bg-brand-500 text-white">
         <PawMark className="h-4 w-4" />
       </span>

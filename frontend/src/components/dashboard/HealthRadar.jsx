@@ -20,19 +20,19 @@ export default function HealthRadar({ data = [] }) {
   return (
     <ResponsiveContainer width="100%" height={260}>
       <RadarChart data={chartData} outerRadius="68%">
-        <PolarGrid stroke="#e2e8f0" />
-        <PolarAngleAxis dataKey="axis" tick={{ fontSize: 11, fill: '#64748b' }} />
+        <PolarGrid stroke="#ece6df" />
+        <PolarAngleAxis dataKey="axis" tick={{ fontSize: 11, fill: '#78716c' }} />
         <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
         <Tooltip
-          contentStyle={{ borderRadius: 12, border: '1px solid #e2e8f0', fontSize: 12 }}
+          contentStyle={{ borderRadius: 12, border: '1px solid #ece6df', fontSize: 12 }}
           formatter={(v, name) => [`${v}점`, name]}
         />
         {/* 권장 수준 기준선 */}
         <Radar
           name="권장 수준"
           dataKey="recommended"
-          stroke="#cbd5e1"
-          fill="#cbd5e1"
+          stroke="#d6cfc7"
+          fill="#d6cfc7"
           fillOpacity={0.12}
           strokeDasharray="4 4"
           dot={false}
@@ -41,10 +41,10 @@ export default function HealthRadar({ data = [] }) {
         <Radar
           name="우리 아이"
           dataKey="score"
-          stroke="#2f7df6"
-          fill="#2f7df6"
+          stroke="#f26b43"
+          fill="#f26b43"
           fillOpacity={0.3}
-          dot={{ r: 3, fill: '#2f7df6' }}
+          dot={{ r: 3, fill: '#f26b43' }}
         />
         <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} iconType="circle" />
       </RadarChart>

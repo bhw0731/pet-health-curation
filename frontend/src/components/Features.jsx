@@ -27,8 +27,8 @@ export default function Features() {
     <section id="features" className="py-20 scroll-mt-16">
       <div className="mx-auto max-w-6xl px-4">
         <header className="text-center mb-14">
-          <h2 className="text-3xl font-bold text-slate-900">왜 펫헬스 큐레이션일까요?</h2>
-          <p className="mt-3 text-slate-500">
+          <h2 className="text-3xl font-bold text-stone-900">왜 펫헬스 큐레이션일까요?</h2>
+          <p className="mt-3 text-stone-500">
             검색에 지친 보호자를 위한, 가장 빠르고 신뢰할 수 있는 건강 가이드
           </p>
         </header>
@@ -38,19 +38,19 @@ export default function Features() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="rounded-2xl border border-slate-100 bg-white p-8 shadow-sm hover:shadow-md transition"
+              className="rounded-2xl border border-stone-100 bg-white p-8 shadow-sm hover:shadow-md transition"
             >
               <div className="grid place-items-center w-12 h-12 rounded-xl bg-brand-50 text-2xl">
                 {f.icon}
               </div>
-              <h3 className="mt-5 text-lg font-semibold text-slate-900">{f.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-500">{f.desc}</p>
+              <h3 className="mt-5 text-lg font-semibold text-stone-900">{f.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-stone-500">{f.desc}</p>
             </div>
           ))}
         </div>
 
         {/* 3단계 흐름 */}
-        <div className="mt-16 rounded-2xl bg-slate-900 px-6 py-12 sm:px-12">
+        <div className="mt-16 rounded-2xl bg-stone-900 px-6 py-12 sm:px-12">
           <h3 className="text-center text-xl font-semibold text-white">이렇게 진행돼요</h3>
           <div className="mt-10 grid gap-8 sm:grid-cols-3">
             {STEPS.map((s) => (
@@ -59,7 +59,7 @@ export default function Features() {
                   {s.step}
                 </div>
                 <h4 className="mt-4 font-semibold text-white">{s.title}</h4>
-                <p className="mt-1 text-sm text-slate-400">{s.desc}</p>
+                <p className="mt-1 text-sm text-stone-400">{s.desc}</p>
               </div>
             ))}
           </div>

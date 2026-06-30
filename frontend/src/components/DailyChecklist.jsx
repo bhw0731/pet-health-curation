@@ -27,11 +27,11 @@ export default function DailyChecklist({ items = [], onProgress }) {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <h4 className="text-base font-bold text-slate-900">✅ 오늘의 건강 실천</h4>
-          <p className="text-xs text-slate-400">작은 실천이 모여 큰 변화를 만들어요</p>
+          <h4 className="text-base font-bold text-stone-900">✅ 오늘의 건강 실천</h4>
+          <p className="text-xs text-stone-400">작은 실천이 모여 큰 변화를 만들어요</p>
         </div>
         <span className="text-sm font-bold text-brand-600">
           {doneCount} / {items.length}
@@ -46,18 +46,18 @@ export default function DailyChecklist({ items = [], onProgress }) {
               <button
                 onClick={() => toggle(i)}
                 className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
-                  on ? 'border-brand-200 bg-brand-50' : 'border-slate-200 hover:border-slate-300'
+                  on ? 'border-brand-200 bg-brand-50' : 'border-stone-200 hover:border-stone-300'
                 }`}
               >
                 <span
                   className={`grid h-6 w-6 flex-shrink-0 place-items-center rounded-md border-2 transition ${
-                    on ? 'border-brand-500 bg-brand-500 text-white' : 'border-slate-300'
+                    on ? 'border-brand-500 bg-brand-500 text-white' : 'border-stone-300'
                   }`}
                 >
                   {on && '✓'}
                 </span>
                 <span
-                  className={`text-sm ${on ? 'text-slate-400 line-through' : 'text-slate-700'}`}
+                  className={`text-sm ${on ? 'text-stone-400 line-through' : 'text-stone-700'}`}
                 >
                   {item}
                 </span>

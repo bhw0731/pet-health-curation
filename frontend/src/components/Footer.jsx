@@ -2,9 +2,9 @@ import { PawMark } from './common/Logo.jsx';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-100 bg-white py-10">
-      <div className="mx-auto max-w-6xl px-4 text-center text-sm text-slate-400">
-        <p className="flex items-center justify-center gap-1.5 font-semibold text-slate-600">
+    <footer className="border-t border-stone-100 bg-white py-10">
+      <div className="mx-auto max-w-6xl px-4 text-center text-sm text-stone-400">
+        <p className="flex items-center justify-center gap-1.5 font-semibold text-stone-600">
           <PawMark className="h-4 w-4 text-brand-500" /> 펫헬스 큐레이션
         </p>
         <p className="mt-2">

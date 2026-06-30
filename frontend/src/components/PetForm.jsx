@@ -108,16 +108,16 @@ export default function PetForm({ onSubmit, loading, initialName, onError }) {
   }
 
   return (
-    <div className="mx-auto max-w-2xl rounded-2xl border border-slate-100 bg-white p-6 sm:p-10 shadow-sm">
+    <div className="mx-auto max-w-2xl rounded-2xl border border-stone-100 bg-white p-6 sm:p-10 shadow-sm">
       {/* 진행 바 */}
       <div className="mb-8">
-        <div className="mb-2 flex items-center justify-between text-xs font-medium text-slate-400">
+        <div className="mb-2 flex items-center justify-between text-xs font-medium text-stone-400">
           <span className="text-brand-600">
-            STEP {step + 1} <span className="text-slate-300">/ {STEPS.length}</span>
+            STEP {step + 1} <span className="text-stone-300">/ {STEPS.length}</span>
           </span>
           <span>{Math.round(progress)}%</span>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-stone-100">
           <div
             className="h-full rounded-full bg-brand-500 transition-all duration-500"
             style={{ width: `${progress}%` }}
@@ -127,8 +127,8 @@ export default function PetForm({ onSubmit, loading, initialName, onError }) {
 
       {/* 질문 헤더 */}
       <div className="mb-6 text-center">
-        <h3 className="text-2xl font-bold text-slate-900">{STEPS[step].title}</h3>
-        <p className="mt-2 text-sm text-slate-500">{STEPS[step].sub}</p>
+        <h3 className="text-2xl font-bold text-stone-900">{STEPS[step].title}</h3>
+        <p className="mt-2 text-sm text-stone-500">{STEPS[step].sub}</p>
       </div>
 
       {/* 단계별 본문 (framer-motion 슬라이드 전환) */}
@@ -177,7 +177,7 @@ export default function PetForm({ onSubmit, loading, initialName, onError }) {
           <button
             type="button"
             onClick={goPrev}
-            className="rounded-xl border border-slate-200 px-6 py-3.5 font-semibold text-slate-600 hover:bg-slate-50 transition"
+            className="rounded-xl border border-stone-200 px-6 py-3.5 font-semibold text-stone-600 hover:bg-stone-50 transition"
           >
             이전
           </button>
@@ -221,12 +221,12 @@ function SpeciesStep({ options, form, onPick, onName }) {
               className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-6 transition ${
                 active
                   ? 'border-brand-500 bg-brand-50 text-brand-600'
-                  : 'border-slate-200 text-slate-400 hover:border-slate-300'
+                  : 'border-stone-200 text-stone-400 hover:border-stone-300'
               }`}
             >
               {Icon ? <Icon className="h-16 w-16" /> : <span className="text-4xl">🐾</span>}
               <span
-                className={`text-base font-bold ${active ? 'text-brand-700' : 'text-slate-700'}`}
+                className={`text-base font-bold ${active ? 'text-brand-700' : 'text-stone-700'}`}
               >
                 {p.label}
               </span>
@@ -236,15 +236,15 @@ function SpeciesStep({ options, form, onPick, onName }) {
       </div>
 
       <div className="mt-6">
-        <label className="mb-2 block text-sm font-semibold text-slate-700">
-          이름 <span className="text-xs font-normal text-slate-400">(선택)</span>
+        <label className="mb-2 block text-sm font-semibold text-stone-700">
+          이름 <span className="text-xs font-normal text-stone-400">(선택)</span>
         </label>
         <input
           type="text"
           value={form.petName}
           onChange={(e) => onName(e.target.value)}
           placeholder="예: 콩이"
-          className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+          className="w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
         />
       </div>
     </div>
@@ -264,7 +264,7 @@ function AgeStep({ form, onChange, onEnter }) {
             className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition ${
               String(a.months) === String(form.ageMonths)
                 ? 'border-brand-500 bg-brand-500 text-white'
-                : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                : 'border-stone-200 text-stone-600 hover:border-stone-300'
             }`}
           >
             {a.label}
@@ -273,7 +273,7 @@ function AgeStep({ form, onChange, onEnter }) {
       </div>
 
       <div className="mt-8 text-center">
-        <p className="mb-3 text-sm text-slate-400">또는 직접 입력 (개월 수)</p>
+        <p className="mb-3 text-sm text-stone-400">또는 직접 입력 (개월 수)</p>
         <div className="flex items-center justify-center gap-2">
           <input
             type="number"
@@ -284,11 +284,11 @@ function AgeStep({ form, onChange, onEnter }) {
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && onEnter()}
             placeholder="24"
-            className="w-32 rounded-xl border border-slate-200 px-4 py-3 text-center text-lg font-bold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+            className="w-32 rounded-xl border border-stone-200 px-4 py-3 text-center text-lg font-bold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
           />
-          <span className="text-slate-500">개월</span>
+          <span className="text-stone-500">개월</span>
         </div>
-        <p className="mt-3 text-xs text-slate-400">예: 2살 → 24개월</p>
+        <p className="mt-3 text-xs text-stone-400">예: 2살 → 24개월</p>
       </div>
     </div>
   );
@@ -311,13 +311,13 @@ function ConcernStep({ options, form, onToggle }) {
               className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-4 transition ${
                 active
                   ? 'border-brand-500 bg-brand-50'
-                  : 'border-slate-200 hover:border-slate-300'
+                  : 'border-stone-200 hover:border-stone-300'
               } ${disabled ? 'cursor-not-allowed opacity-40' : ''}`}
             >
               <span className="text-3xl">{CONCERN_EMOJI[c.id] ?? '•'}</span>
               <span
                 className={`text-sm font-semibold ${
-                  active ? 'text-brand-700' : 'text-slate-600'
+                  active ? 'text-brand-700' : 'text-stone-600'
                 }`}
               >
                 {c.label}
@@ -326,7 +326,7 @@ function ConcernStep({ options, form, onToggle }) {
           );
         })}
       </div>
-      <p className="mt-4 text-center text-xs text-slate-400">
+      <p className="mt-4 text-center text-xs text-stone-400">
         선택됨 {form.concerns.length} / {MAX_CONCERNS}
       </p>
     </div>

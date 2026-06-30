@@ -14,11 +14,11 @@ export default function HealthToolsPage() {
   const [tool, setTool] = useState('calorie');
 
   return (
-    <div className="bg-slate-50 py-10 sm:py-14">
+    <div className="bg-stone-50 py-10 sm:py-14">
       <div className="mx-auto max-w-3xl px-4">
         <header className="mb-6">
-          <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">건강 계산기</h1>
-          <p className="mt-1.5 text-slate-500">우리 아이 정보로 바로 계산해 보세요. 모두 참고용이에요 🐾</p>
+          <h1 className="text-2xl font-extrabold text-stone-900 sm:text-3xl">건강 계산기</h1>
+          <p className="mt-1.5 text-stone-500">우리 아이 정보로 바로 계산해 보세요. 모두 참고용이에요 🐾</p>
         </header>
 
         {/* 도구 탭 */}
@@ -30,7 +30,7 @@ export default function HealthToolsPage() {
               className={`flex items-center justify-center gap-1.5 rounded-xl border-2 py-3 text-sm font-bold transition ${
                 tool === t.id
                   ? 'border-brand-500 bg-brand-50 text-brand-700'
-                  : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300'
+                  : 'border-stone-200 bg-white text-stone-500 hover:border-stone-300'
               }`}
             >
               <span>{t.emoji}</span> {t.label}
@@ -45,7 +45,7 @@ export default function HealthToolsPage() {
           {tool === 'bcs' && <BcsCalc />}
         </div>
 
-        <p className="mt-6 text-center text-xs text-slate-400">
+        <p className="mt-6 text-center text-xs text-stone-400">
           본 계산 결과는 일반 가이드를 기반으로 한 참고용이며, 정확한 진단은 수의사 상담이 필요합니다.
         </p>
       </div>
@@ -57,13 +57,13 @@ export default function HealthToolsPage() {
 function Field({ label, children }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-semibold text-slate-700">{label}</span>
+      <span className="mb-1.5 block text-sm font-semibold text-stone-700">{label}</span>
       {children}
     </label>
   );
 }
 const inputCls =
-  'w-full rounded-xl border border-slate-200 px-4 py-2.5 outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100';
+  'w-full rounded-xl border border-stone-200 px-4 py-2.5 outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100';
 
 function ResultBox({ children }) {
   return (
@@ -117,7 +117,7 @@ function CalorieCalc() {
                   setStatus('neutered');
                 }}
                 className={`rounded-xl border-2 py-2.5 text-sm font-semibold ${
-                  species === s ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-slate-200 text-slate-500'
+                  species === s ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-stone-200 text-stone-500'
                 }`}
               >
                 {s === 'dog' ? '강아지' : '고양이'}
@@ -137,7 +137,7 @@ function CalorieCalc() {
                 key={a.id}
                 onClick={() => setStatus(a.id)}
                 className={`rounded-full border px-3.5 py-1.5 text-sm font-medium ${
-                  status === a.id ? 'border-brand-500 bg-brand-500 text-white' : 'border-slate-200 text-slate-600'
+                  status === a.id ? 'border-brand-500 bg-brand-500 text-white' : 'border-stone-200 text-stone-600'
                 }`}
               >
                 {a.label}
@@ -156,7 +156,7 @@ function CalorieCalc() {
           <p className="mt-2 text-xs text-brand-100">RER {Math.round(rer(w))} × 활동계수 {factor}</p>
         </ResultBox>
       ) : (
-        <p className="mt-5 text-center text-sm text-slate-400">체중을 입력하면 결과가 표시돼요.</p>
+        <p className="mt-5 text-center text-sm text-stone-400">체중을 입력하면 결과가 표시돼요.</p>
       )}
     </Card>
   );
@@ -204,7 +204,7 @@ function FeedCalc() {
           <p className="mt-2 text-xs text-brand-100">하루 2끼 기준 약 {Math.round(grams / 2)}g씩</p>
         </ResultBox>
       ) : (
-        <p className="mt-5 text-center text-sm text-slate-400">체중과 사료 열량을 입력해 주세요.</p>
+        <p className="mt-5 text-center text-sm text-stone-400">체중과 사료 열량을 입력해 주세요.</p>
       )}
     </Card>
   );
@@ -239,7 +239,7 @@ function AgeCalc() {
         <Field label="종류">
           <div className="grid grid-cols-2 gap-2">
             {['dog', 'cat'].map((s) => (
-              <button key={s} onClick={() => setSpecies(s)} className={`rounded-xl border-2 py-2.5 text-sm font-semibold ${species === s ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-slate-200 text-slate-500'}`}>
+              <button key={s} onClick={() => setSpecies(s)} className={`rounded-xl border-2 py-2.5 text-sm font-semibold ${species === s ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-stone-200 text-stone-500'}`}>
                 {s === 'dog' ? '강아지' : '고양이'}
               </button>
             ))}
@@ -254,7 +254,7 @@ function AgeCalc() {
           <Field label="크기">
             <div className="flex gap-2">
               {[{ id: 'small', l: '소형견' }, { id: 'medium', l: '중형견' }, { id: 'large', l: '대형견' }].map((s) => (
-                <button key={s.id} onClick={() => setSize(s.id)} className={`flex-1 rounded-full border px-3 py-1.5 text-sm font-medium ${size === s.id ? 'border-brand-500 bg-brand-500 text-white' : 'border-slate-200 text-slate-600'}`}>
+                <button key={s.id} onClick={() => setSize(s.id)} className={`flex-1 rounded-full border px-3 py-1.5 text-sm font-medium ${size === s.id ? 'border-brand-500 bg-brand-500 text-white' : 'border-stone-200 text-stone-600'}`}>
                   {s.l}
                 </button>
               ))}
@@ -268,7 +268,7 @@ function AgeCalc() {
           <p className="mt-1 text-4xl font-extrabold">약 {human}세</p>
         </ResultBox>
       ) : (
-        <p className="mt-5 text-center text-sm text-slate-400">나이를 입력하면 결과가 표시돼요.</p>
+        <p className="mt-5 text-center text-sm text-stone-400">나이를 입력하면 결과가 표시돼요.</p>
       )}
     </Card>
   );
@@ -289,29 +289,29 @@ function BcsCalc() {
   const chosen = BCS_OPTIONS.find((o) => o.id === sel);
   return (
     <Card>
-      <p className="text-sm font-semibold text-slate-700">갈비뼈를 만졌을 때 가장 가까운 상태는?</p>
+      <p className="text-sm font-semibold text-stone-700">갈비뼈를 만졌을 때 가장 가까운 상태는?</p>
       <div className="mt-3 space-y-2">
         {BCS_OPTIONS.map((o) => (
           <button
             key={o.id}
             onClick={() => setSel(o.id)}
             className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left text-sm transition ${
-              sel === o.id ? 'border-brand-500 bg-brand-50' : 'border-slate-200 hover:border-slate-300'
+              sel === o.id ? 'border-brand-500 bg-brand-50' : 'border-stone-200 hover:border-stone-300'
             }`}
           >
-            <span className={`grid h-7 w-7 flex-shrink-0 place-items-center rounded-full text-xs font-bold ${sel === o.id ? 'bg-brand-500 text-white' : 'bg-slate-100 text-slate-500'}`}>
+            <span className={`grid h-7 w-7 flex-shrink-0 place-items-center rounded-full text-xs font-bold ${sel === o.id ? 'bg-brand-500 text-white' : 'bg-stone-100 text-stone-500'}`}>
               {o.id}
             </span>
-            <span className="text-slate-700">{o.label}</span>
+            <span className="text-stone-700">{o.label}</span>
           </button>
         ))}
       </div>
       {chosen && (
-        <div className="mt-5 rounded-2xl border border-slate-100 bg-white p-5 text-center shadow-sm">
+        <div className="mt-5 rounded-2xl border border-stone-100 bg-white p-5 text-center shadow-sm">
           <span className={`inline-block rounded-full px-3 py-1 text-sm font-bold ${BCS_BADGE[chosen.color]}`}>
             {chosen.result}
           </span>
-          <p className="mt-3 text-sm text-slate-600">{chosen.advice}</p>
+          <p className="mt-3 text-sm text-stone-600">{chosen.advice}</p>
         </div>
       )}
     </Card>

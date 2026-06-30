@@ -24,7 +24,7 @@ export default class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="grid min-h-screen place-items-center bg-slate-50 p-6">
+        <div className="grid min-h-screen place-items-center bg-stone-50 p-6">
           <div className="w-full max-w-md">
             <ErrorState
               title="일시적인 오류가 발생했어요"
