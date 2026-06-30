@@ -7,6 +7,7 @@ import PetForm from './components/PetForm.jsx';
 import CurationResult from './components/CurationResult.jsx';
 import HistoryPanel from './components/HistoryPanel.jsx';
 import ErrorState from './components/common/ErrorState.jsx';
+import ResultSkeleton from './components/common/ResultSkeleton.jsx';
 import Footer from './components/Footer.jsx';
 import { requestCuration } from './lib/api.js';
 import {
@@ -166,7 +167,13 @@ export default function App() {
               </div>
             )}
 
-            {result && (
+            {loading && (
+              <div className="mt-16">
+                <ResultSkeleton />
+              </div>
+            )}
+
+            {!loading && result && (
               <div ref={resultRef} className="mt-16 scroll-mt-16">
                 <CurationResult
                   result={result}

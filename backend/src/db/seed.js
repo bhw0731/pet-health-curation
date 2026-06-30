@@ -12,7 +12,7 @@ export function seedDatabase(db) {
   const insertPetType = db.prepare('INSERT INTO pet_types (id, label, sort) VALUES (?, ?, ?)');
   const insertConcern = db.prepare('INSERT INTO concerns (id, label, sort) VALUES (?, ?, ?)');
   const insertContent = db.prepare(
-    'INSERT INTO concern_content (concern_id, title, summary, tips, community_stat, vet_tip) VALUES (?, ?, ?, ?, ?, ?)'
+    'INSERT INTO concern_content (concern_id, title, summary, tips, community_stat, vet_tip, products) VALUES (?, ?, ?, ?, ?, ?, ?)'
   );
   const insertStage = db.prepare('INSERT INTO stage_guide (stage_id, guide) VALUES (?, ?)');
   const insertReview = db.prepare(
@@ -33,7 +33,8 @@ export function seedDatabase(db) {
         content.summary,
         JSON.stringify(content.tips),
         content.communityStat ?? null,
-        content.vetTip ?? null
+        content.vetTip ?? null,
+        JSON.stringify(content.products ?? [])
       );
     }
 

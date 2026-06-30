@@ -28,7 +28,16 @@ html {
 }
 
 body {
+  font-family: var(--font-sans);
   @apply bg-slate-50 text-slate-800 antialiased;
+  letter-spacing: -0.01em; /* 한글 가독성·토스식 밀도 */
+  word-break: keep-all; /* 한글 단어 단위 줄바꿈 */
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+}
+
+/* 제목은 더 단단한 자간 */
+h1, h2, h3, h4 {
+  letter-spacing: -0.02em;
 }
 
 /* ───────────────────────────────────────────────

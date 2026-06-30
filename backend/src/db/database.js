@@ -32,7 +32,8 @@ const SCHEMA = `
     summary        TEXT NOT NULL,
     tips           TEXT NOT NULL,        -- JSON 배열 문자열
     community_stat TEXT,
-    vet_tip        TEXT
+    vet_tip        TEXT,
+    products       TEXT                  -- JSON 배열 문자열
   );
 
   CREATE TABLE IF NOT EXISTS stage_guide (

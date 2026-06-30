@@ -5,6 +5,7 @@ import HealthRadar from './dashboard/HealthRadar.jsx';
 import StatusSummaryCard from './dashboard/StatusSummaryCard.jsx';
 import DailyChecklist from './DailyChecklist.jsx';
 import RecentLogTabs from './RecentLogTabs.jsx';
+import ProductRecommendations from './ProductRecommendations.jsx';
 import { saveAsImage, copyText, buildShareText, shareResult } from '../lib/share.js';
 import { gradeOf } from '../lib/grade.js';
 
@@ -140,6 +141,9 @@ export default function CurationResult({
         <p className="mt-6 text-center text-xs text-slate-400">{disclaimer}</p>
       </div>
       {/* /리포트 캡처 영역 끝 */}
+
+      {/* ── 제휴 상품 추천 (수익 전환 동선) ── */}
+      <ProductRecommendations recommendations={recommendations} petName={summary.displayName} />
 
       {/* ── 액션 바 (저장 / 공유) ── */}
       <ActionBar result={result} reportRef={reportRef} onSave={onSave} saved={saved} />

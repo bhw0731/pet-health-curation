@@ -29,6 +29,7 @@ export function buildCuration(value) {
       tips: content.tips,
       communityStat: content.communityStat,
       vetTip: content.vetTip,
+      products: content.products ?? [],
       // 같은 고민을 가진 보호자 후기 (종/생애주기 매칭)
       reviews: getReviewsForConcern(concernId, petType, stage.id),
       // 노령기 + 관절 같은 조합엔 우선순위 가중 (정렬에 활용)

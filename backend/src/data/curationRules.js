@@ -42,6 +42,10 @@ export const CONCERN_CONTENT = {
     communityStat: '같은 고민을 가진 보호자의 68%가 "식단 변경 후 개선"을 경험했어요.',
     vetTip:
       '피부 트러블은 식이 알레르기와 환경 요인을 구분하는 것이 가장 중요합니다. 자가 처치로 2주 이상 호전이 없다면 피부 소파 검사를 받아보시길 권합니다.',
+    products: [
+      { name: '오메가밸런스 피부·모질 영양제', brand: '펫웰', price: 24900, tag: '베스트' },
+      { name: '저자극 약산성 케어 샴푸', brand: '닥터바스', price: 18500, tag: null },
+    ],
   },
   joint: {
     title: '관절 · 뼈 건강 관리',
@@ -54,6 +58,10 @@ export const CONCERN_CONTENT = {
     communityStat: '노령기 보호자의 절반 이상이 관절을 1순위 고민으로 꼽았어요.',
     vetTip:
       '반려동물은 관절 통증을 본능적으로 숨깁니다. 산책을 거부하거나 점프를 피하는 변화가 보이면 이미 진행된 경우가 많으니 조기 진료가 중요합니다.',
+    products: [
+      { name: '글루코사민 관절케어 정', brand: '조인트랩', price: 32000, tag: '베스트' },
+      { name: '미끄럼 방지 관절보호 펫매트', brand: '컴포펫', price: 45000, tag: null },
+    ],
   },
   weight: {
     title: '체중 · 비만 관리',
@@ -66,6 +74,10 @@ export const CONCERN_CONTENT = {
     communityStat: '체중 기록을 시작한 보호자의 72%가 "8주 내 체중 변화"를 보고했어요.',
     vetTip:
       '급격한 감량은 지방간 등 부작용을 부릅니다. 주당 체중의 1~2% 감량을 목표로 천천히 진행하고, 처방 다이어트 사료를 활용하면 안전합니다.',
+    products: [
+      { name: '체중관리 처방 다이어트 사료 2kg', brand: '뉴트리밸런스', price: 28900, tag: '베스트' },
+      { name: '저칼로리 트레이닝 트릿', brand: '슬림펫', price: 9900, tag: null },
+    ],
   },
   dental: {
     title: '치아 · 구강 관리',
@@ -78,6 +90,10 @@ export const CONCERN_CONTENT = {
     communityStat: '3세 이상의 80%가 어느 정도의 치주 질환을 겪는다고 알려져 있어요.',
     vetTip:
       '치주 질환의 세균은 혈류를 타고 심장·신장에도 영향을 줄 수 있습니다. 연 1회 전문 스케일링 검진을 받으시길 권장합니다.',
+    products: [
+      { name: '효소 덴탈 치약·칫솔 세트', brand: '클린덴트', price: 15900, tag: '베스트' },
+      { name: '치석케어 덴탈껌 30개입', brand: '치카봉', price: 12500, tag: null },
+    ],
   },
   digestion: {
     title: '소화 · 장 건강 관리',
@@ -90,6 +106,10 @@ export const CONCERN_CONTENT = {
     communityStat: '사료 교체를 천천히 한 그룹에서 소화 문제 발생률이 더 낮았어요.',
     vetTip:
       '만성적인 구토·설사는 단순 소화불량이 아니라 췌장염이나 염증성 장질환의 신호일 수 있습니다. 혈액·영상 검사로 원인을 확인하는 것이 좋습니다.',
+    products: [
+      { name: '펫 프로바이오틱스 유산균', brand: '바이오펫', price: 21000, tag: '베스트' },
+      { name: '민감장 케어 화식 사료', brand: '데일리키친', price: 33000, tag: null },
+    ],
   },
   eye: {
     title: '눈 · 시력 관리',
@@ -102,6 +122,10 @@ export const CONCERN_CONTENT = {
     communityStat: '단두종 보호자의 눈 관련 고민 비율이 평균보다 높게 나타났어요.',
     vetTip:
       '각막 손상은 응급 상황일 수 있습니다. 눈을 자주 비비거나 충혈·눈물·눈곱이 급격히 늘면 24시간 이내 안과 진료를 받으세요.',
+    products: [
+      { name: '눈물자국 케어 전용 티슈', brand: '클리어아이', price: 8900, tag: '베스트' },
+      { name: '루테인 눈 건강 영양제', brand: '비전펫', price: 19900, tag: null },
+    ],
   },
 };
 
