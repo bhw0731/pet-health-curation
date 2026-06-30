@@ -1,0 +1,79 @@
+// 저장된 분석 기록(localStorage) 목록 — 다시 보기 / 삭제
+const GRADE_COLOR = {
+  양호: 'text-emerald-600',
+  주의: 'text-amber-600',
+  '집중 관리': 'text-rose-600',
+};
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+export default function HistoryPanel({ history, onView, onDelete, onClear }) {
+  if (history.length === 0) {
+    return (
+      <div className="rounded-xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-400">
+        아직 저장된 분석 기록이 없어요. 결과 화면에서 <b className="text-slate-600">내 프로필에 저장</b>을 눌러보세요.
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <h4 className="text-sm font-semibold text-slate-700">
+          내 분석 기록 <span className="text-slate-400">({history.length})</span>
+        </h4>
+        <button onClick={onClear} className="text-xs text-slate-400 hover:text-rose-500">
+          전체 삭제
+        </button>
+      </div>
+
+      <ul className="space-y-2">
+        {history.map((h) => (
+          <li
+            key={h.id}
+            className="flex items-center gap-3 rounded-lg border border-slate-100 p-3 hover:bg-slate-50"
+          >
+            {h.score != null && (
+              <div className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-full bg-slate-100">
+                <span className="text-sm font-extrabold text-slate-800">{h.score}</span>
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-slate-800">
+                {h.label}
+                <span className="ml-1 font-normal text-slate-400">
+                  · {h.petLabel} · {h.ageText}
+                </span>
+              </p>
+              <p className="text-xs text-slate-400">
+                {formatDate(h.savedAt)}
+                {h.grade && (
+                  <span className={`ml-2 font-semibold ${GRADE_COLOR[h.grade] ?? ''}`}>
+                    {h.grade}
+                  </span>
+                )}
+              </p>
+            </div>
+            <button
+              onClick={() => onView(h)}
+              className="rounded-lg bg-brand-50 px-3 py-1.5 text-xs font-semibold text-brand-700 hover:bg-brand-100"
+            >
+              다시 보기
+            </button>
+            <button
+              onClick={() => onDelete(h.id)}
+              className="rounded-lg px-2 py-1.5 text-xs text-slate-300 hover:text-rose-500"
+              aria-label="삭제"
+            >
+              ✕
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

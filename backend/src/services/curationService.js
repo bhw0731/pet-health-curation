@@ -49,15 +49,24 @@ export function buildCuration(value) {
   const months = ageMonths % 12;
   const ageText = years > 0 ? `${years}살 ${months}개월` : `${months}개월`;
 
+  // 개인화 인사말 (LLM 없이 입력값 기반 결정적 템플릿)
+  const focusArea = healthProfile.focusArea;
+  const greeting = {
+    text: `${displayName}는 현재 ${ageText} ${stage.label}, ${focusArea} 관리가 집중적으로 필요해요!`,
+    highlight: focusArea, // 프론트에서 강조할 키워드
+  };
+
   return {
     summary: {
       headline: `${displayName}를 위한 ${stage.label} 맞춤 가이드`,
+      displayName,
       petLabel,
       ageText,
       stage: { id: stage.id, label: stage.label },
       stageGuide: getStageGuide(stage.id),
       concernCount: recommendations.length,
       reviewCount: totalReviews,
+      greeting,
     },
     healthProfile,
     recommendations,

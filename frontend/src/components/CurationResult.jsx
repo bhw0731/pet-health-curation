@@ -1,5 +1,7 @@
+import { useRef, useState } from 'react';
 import HealthGauge from './dashboard/HealthGauge.jsx';
 import HealthRadar from './dashboard/HealthRadar.jsx';
+import { saveAsImage, copyText, buildShareText, shareResult } from '../lib/share.js';
 
 // 등급(color) → 정적 Tailwind 클래스 매핑 (동적 클래스명은 빌드에서 누락되므로 리터럴로 둠)
 const GRADE_BADGE = {
@@ -8,12 +10,25 @@ const GRADE_BADGE = {
   rose: 'bg-rose-50 text-rose-700 ring-rose-200',
 };
 
-export default function CurationResult({ result, onReset }) {
+export default function CurationResult({ result, onReset, onSave, saved }) {
   const { summary, healthProfile, recommendations, disclaimer } = result;
   const gradeBadge = GRADE_BADGE[healthProfile?.grade?.color] ?? GRADE_BADGE.emerald;
+  const reportRef = useRef(null);
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 sm:p-8">
+      {/* 이미지로 캡처할 리포트 영역 (액션 버튼은 제외) */}
+      <div ref={reportRef} className="rounded-xl">
+        {/* ── 개인화 인사말 (AI 추천 문구) ── */}
+        {summary.greeting && (
+          <div className="mb-6 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 p-6 sm:p-8 text-white">
+            <p className="text-sm font-medium text-brand-100">AI 맞춤 분석</p>
+            <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold leading-snug">
+              <Greeting text={summary.greeting.text} highlight={summary.greeting.highlight} />
+            </h2>
+          </div>
+        )}
+
       {/* 헤더 */}
       <div className="text-center">
         <span className="inline-block rounded-full bg-white px-4 py-1.5 text-sm font-medium text-brand-700 shadow-sm ring-1 ring-slate-100">
@@ -73,9 +88,15 @@ export default function CurationResult({ result, onReset }) {
         </div>
       </div>
 
-      {/* 면책 문구 + 액션 */}
-      <p className="mt-6 text-center text-xs text-slate-400">{disclaimer}</p>
-      <div className="mt-6 flex justify-center">
+        {/* 면책 문구 */}
+        <p className="mt-6 text-center text-xs text-slate-400">{disclaimer}</p>
+      </div>
+      {/* /리포트 캡처 영역 끝 */}
+
+      {/* ── 액션 바 (저장 / 공유) ── */}
+      <ActionBar result={result} reportRef={reportRef} onSave={onSave} saved={saved} />
+
+      <div className="mt-4 flex justify-center">
         <button
           onClick={onReset}
           className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
@@ -83,6 +104,101 @@ export default function CurationResult({ result, onReset }) {
           다른 정보로 다시 받기
         </button>
       </div>
+    </div>
+  );
+}
+
+// ── 개인화 인사말: highlight 키워드를 강조 ──
+function Greeting({ text, highlight }) {
+  if (!highlight || !text.includes(highlight)) return <>{text}</>;
+  const [before, after] = text.split(highlight);
+  return (
+    <>
+      {before}
+      <span className="rounded-md bg-white/20 px-1.5 py-0.5">{highlight}</span>
+      {after}
+    </>
+  );
+}
+
+// ── 저장 / 공유 액션 바 ──
+function ActionBar({ result, reportRef, onSave, saved }) {
+  const [toast, setToast] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const flash = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(''), 2000);
+  };
+
+  async function handleCopy() {
+    try {
+      await copyText(buildShareText(result));
+      flash('결과가 텍스트로 복사되었어요');
+    } catch {
+      flash('복사에 실패했어요');
+    }
+  }
+
+  async function handleImage() {
+    if (!reportRef.current) return;
+    setBusy(true);
+    try {
+      await saveAsImage(reportRef.current, `${result.summary.displayName}-건강리포트.png`);
+      flash('이미지를 저장했어요');
+    } catch {
+      flash('이미지 저장에 실패했어요');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleShare() {
+    try {
+      const mode = await shareResult(result);
+      if (mode === 'copied') flash('공유 텍스트가 복사되었어요');
+    } catch {
+      /* 사용자가 공유 취소 시 무시 */
+    }
+  }
+
+  return (
+    <div className="mt-8 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <button
+          onClick={() => onSave?.(result)}
+          disabled={saved}
+          className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${
+            saved
+              ? 'bg-emerald-50 text-emerald-600'
+              : 'bg-brand-500 text-white hover:bg-brand-600'
+          }`}
+        >
+          {saved ? '✓ 저장됨' : '＋ 내 프로필에 저장'}
+        </button>
+        <button
+          onClick={handleCopy}
+          className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+        >
+          📋 텍스트 복사
+        </button>
+        <button
+          onClick={handleImage}
+          disabled={busy}
+          className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+        >
+          {busy ? '저장 중…' : '🖼 이미지 저장'}
+        </button>
+        <button
+          onClick={handleShare}
+          className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+        >
+          🔗 공유하기
+        </button>
+      </div>
+      {toast && (
+        <p className="mt-3 text-center text-sm font-medium text-brand-600">{toast}</p>
+      )}
     </div>
   );
 }
