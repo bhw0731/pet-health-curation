@@ -60,6 +60,7 @@ export function buildCuration(value) {
     summary: {
       headline: `${displayName}를 위한 ${stage.label} 맞춤 가이드`,
       displayName,
+      petType, // 종 id (아이콘 표시용)
       petLabel,
       ageText,
       stage: { id: stage.id, label: stage.label },

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import HealthGauge from './dashboard/HealthGauge.jsx';
 import HealthRadar from './dashboard/HealthRadar.jsx';
+import StatusSummaryCard from './dashboard/StatusSummaryCard.jsx';
 import { saveAsImage, copyText, buildShareText, shareResult } from '../lib/share.js';
 
 // 등급(color) → 정적 Tailwind 클래스 매핑 (동적 클래스명은 빌드에서 누락되므로 리터럴로 둠)
@@ -19,26 +20,10 @@ export default function CurationResult({ result, onReset, onSave, saved }) {
     <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 sm:p-8">
       {/* 이미지로 캡처할 리포트 영역 (액션 버튼은 제외) */}
       <div ref={reportRef} className="rounded-xl">
-        {/* ── 개인화 인사말 (AI 추천 문구) ── */}
-        {summary.greeting && (
-          <div className="mb-6 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 p-6 sm:p-8 text-white">
-            <p className="text-sm font-medium text-brand-100">AI 맞춤 분석</p>
-            <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold leading-snug">
-              <Greeting text={summary.greeting.text} highlight={summary.greeting.highlight} />
-            </h2>
-          </div>
-        )}
+        {/* ── 상태 요약 카드 (블루/화이트) ── */}
+        <StatusSummaryCard summary={summary} healthProfile={healthProfile} />
 
-      {/* 헤더 */}
-      <div className="text-center">
-        <span className="inline-block rounded-full bg-white px-4 py-1.5 text-sm font-medium text-brand-700 shadow-sm ring-1 ring-slate-100">
-          {summary.petLabel} · {summary.ageText} · {summary.stage.label}
-        </span>
-        <h3 className="mt-4 text-2xl font-bold text-slate-900">{summary.headline}</h3>
-        <p className="mt-2 text-slate-500">{summary.stageGuide}</p>
-      </div>
-
-      {/* ── 건강 지수 대시보드 (히어로) ── */}
+        {/* ── 건강 지수 대시보드 (히어로) ── */}
       {healthProfile && (
         <div className="mt-8 grid gap-4 lg:grid-cols-5">
           {/* 종합 건강 지수 게이지 */}
@@ -105,19 +90,6 @@ export default function CurationResult({ result, onReset, onSave, saved }) {
         </button>
       </div>
     </div>
-  );
-}
-
-// ── 개인화 인사말: highlight 키워드를 강조 ──
-function Greeting({ text, highlight }) {
-  if (!highlight || !text.includes(highlight)) return <>{text}</>;
-  const [before, after] = text.split(highlight);
-  return (
-    <>
-      {before}
-      <span className="rounded-md bg-white/20 px-1.5 py-0.5">{highlight}</span>
-      {after}
-    </>
   );
 }
 

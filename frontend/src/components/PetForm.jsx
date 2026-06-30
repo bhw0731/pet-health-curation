@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { fetchOptions } from '../lib/api.js';
 import { PET_ICONS, CONCERN_EMOJI } from './icons/PetIcons.jsx';
+
+// 단계 전환 슬라이드 애니메이션 (direction: 1=다음, -1=이전)
+const slideVariants = {
+  enter: (dir) => ({ x: dir > 0 ? 64 : -64, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir) => ({ x: dir > 0 ? -64 : 64, opacity: 0 }),
+};
 
 const MAX_CONCERNS = 3;
 const STEPS = [
@@ -40,6 +48,7 @@ export default function PetForm({ onSubmit, loading }) {
   const [options, setOptions] = useState({ petTypes: [], concerns: [] });
   const [form, setForm] = useState(INITIAL);
   const [step, setStep] = useState(0);
+  const [direction, setDirection] = useState(1); // 슬라이드 방향
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -67,11 +76,13 @@ export default function PetForm({ onSubmit, loading }) {
     const err = validateStep(stepKey, form);
     if (err) return setError(err);
     setError(null);
+    setDirection(1);
     setStep((s) => Math.min(s + 1, STEPS.length - 1));
   }
 
   function goPrev() {
     setError(null);
+    setDirection(-1);
     setStep((s) => Math.max(s - 1, 0));
   }
 
@@ -119,24 +130,40 @@ export default function PetForm({ onSubmit, loading }) {
         <p className="mt-2 text-sm text-slate-500">{STEPS[step].sub}</p>
       </div>
 
-      {/* 단계별 본문 */}
-      <div className="min-h-[220px]">
-        {stepKey === 'species' && (
-          <SpeciesStep
-            options={options.petTypes}
-            form={form}
-            onPick={(id) => update({ petType: id })}
-            onName={(petName) => update({ petName })}
-          />
-        )}
+      {/* 단계별 본문 (framer-motion 슬라이드 전환) */}
+      <div className="relative min-h-[220px] overflow-hidden">
+        <AnimatePresence mode="wait" custom={direction} initial={false}>
+          <motion.div
+            key={step}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.28, ease: 'easeInOut' }}
+          >
+            {stepKey === 'species' && (
+              <SpeciesStep
+                options={options.petTypes}
+                form={form}
+                onPick={(id) => update({ petType: id })}
+                onName={(petName) => update({ petName })}
+              />
+            )}
 
-        {stepKey === 'age' && (
-          <AgeStep form={form} onChange={(ageMonths) => update({ ageMonths })} onEnter={goNext} />
-        )}
+            {stepKey === 'age' && (
+              <AgeStep
+                form={form}
+                onChange={(ageMonths) => update({ ageMonths })}
+                onEnter={goNext}
+              />
+            )}
 
-        {stepKey === 'concerns' && (
-          <ConcernStep options={options.concerns} form={form} onToggle={toggleConcern} />
-        )}
+            {stepKey === 'concerns' && (
+              <ConcernStep options={options.concerns} form={form} onToggle={toggleConcern} />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       {error && (
