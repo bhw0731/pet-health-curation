@@ -1,32 +1,46 @@
 import { useEffect, useState } from 'react';
 import { fetchOptions } from '../lib/api.js';
+import { PET_ICONS, CONCERN_EMOJI } from './icons/PetIcons.jsx';
 
 const MAX_CONCERNS = 3;
+const STEPS = [
+  { key: 'species', title: '어떤 반려동물인가요?', sub: '종류를 선택하고 이름을 알려주세요 (이름은 선택)' },
+  { key: 'age', title: '나이가 어떻게 되나요?', sub: '아래에서 빠르게 고르거나 직접 입력해 주세요' },
+  { key: 'concerns', title: '어떤 점이 가장 고민이세요?', sub: `최대 ${MAX_CONCERNS}개까지 선택할 수 있어요` },
+];
 
-// 클라이언트 측 유효성 검사 (1차 방어선 — 서버에서 한 번 더 검증함)
-function validate(form) {
-  const errors = {};
-  if (!form.petType) errors.petType = '반려동물 종류를 선택해 주세요.';
-
-  if (form.ageMonths === '') {
-    errors.ageMonths = '나이를 입력해 주세요.';
-  } else {
-    const age = Number(form.ageMonths);
-    if (Number.isNaN(age) || age < 0 || age > 360)
-      errors.ageMonths = '0~360개월 사이로 입력해 주세요.';
-  }
-
-  if (form.concerns.length === 0) errors.concerns = '고민을 1개 이상 선택해 주세요.';
-  return errors;
-}
+// 나이 빠른 선택 (개월 수)
+const AGE_PRESETS = [
+  { label: '6개월', months: 6 },
+  { label: '1살', months: 12 },
+  { label: '3살', months: 36 },
+  { label: '7살', months: 84 },
+  { label: '10살', months: 120 },
+];
 
 const INITIAL = { petName: '', petType: '', ageMonths: '', concerns: [] };
+
+// 단계별 유효성 검사 → 통과 시 다음 단계 이동 가능
+function validateStep(stepKey, form) {
+  if (stepKey === 'species') {
+    if (!form.petType) return '반려동물 종류를 선택해 주세요.';
+  }
+  if (stepKey === 'age') {
+    if (form.ageMonths === '') return '나이를 입력해 주세요.';
+    const age = Number(form.ageMonths);
+    if (Number.isNaN(age) || age < 0 || age > 360) return '0~360개월 사이로 입력해 주세요.';
+  }
+  if (stepKey === 'concerns') {
+    if (form.concerns.length === 0) return '고민을 1개 이상 선택해 주세요.';
+  }
+  return null;
+}
 
 export default function PetForm({ onSubmit, loading }) {
   const [options, setOptions] = useState({ petTypes: [], concerns: [] });
   const [form, setForm] = useState(INITIAL);
-  const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState(false);
+  const [step, setStep] = useState(0);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchOptions()
@@ -34,159 +48,259 @@ export default function PetForm({ onSubmit, loading }) {
       .catch(() => setOptions({ petTypes: [], concerns: [] }));
   }, []);
 
+  const stepKey = STEPS[step].key;
+  const isLast = step === STEPS.length - 1;
+  const progress = ((step + 1) / STEPS.length) * 100;
+
   function update(patch) {
-    const next = { ...form, ...patch };
-    setForm(next);
-    if (touched) setErrors(validate(next)); // 제출 시도 후엔 실시간 검증
+    setForm((f) => ({ ...f, ...patch }));
+    setError(null);
   }
 
   function toggleConcern(id) {
     const has = form.concerns.includes(id);
-    if (!has && form.concerns.length >= MAX_CONCERNS) return; // 최대 3개 제한
+    if (!has && form.concerns.length >= MAX_CONCERNS) return;
     update({ concerns: has ? form.concerns.filter((c) => c !== id) : [...form.concerns, id] });
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setTouched(true);
-    const localErrors = validate(form);
-    setErrors(localErrors);
-    if (Object.keys(localErrors).length > 0) return;
+  function goNext() {
+    const err = validateStep(stepKey, form);
+    if (err) return setError(err);
+    setError(null);
+    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+  }
 
+  function goPrev() {
+    setError(null);
+    setStep((s) => Math.max(s - 1, 0));
+  }
+
+  async function handleSubmit() {
+    const err = validateStep(stepKey, form);
+    if (err) return setError(err);
     try {
       await onSubmit({ ...form, ageMonths: Number(form.ageMonths) });
-    } catch (err) {
-      // 서버 유효성 에러를 폼에 반영
-      if (err.fields) setErrors(err.fields);
-      else alert(err.message || '잠시 후 다시 시도해 주세요.');
+    } catch (e) {
+      // 서버 유효성 에러 → 해당 단계로 이동해 표시
+      if (e.fields) {
+        const order = ['species:petType', 'age:ageMonths', 'concerns:concerns'];
+        const idx = order.findIndex((o) => e.fields[o.split(':')[1]]);
+        if (idx >= 0) {
+          setStep(idx);
+          setError(Object.values(e.fields)[0]);
+        }
+      } else {
+        setError(e.message || '잠시 후 다시 시도해 주세요.');
+      }
     }
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      noValidate
-      className="mx-auto max-w-2xl rounded-2xl border border-slate-100 bg-white p-6 sm:p-10 shadow-sm"
-    >
-      {/* 1. 이름 (선택) */}
-      <Field label="반려동물 이름" optional>
-        <input
-          type="text"
-          value={form.petName}
-          onChange={(e) => update({ petName: e.target.value })}
-          placeholder="예: 콩이"
-          className="input"
-        />
-      </Field>
-
-      {/* 2. 종 선택 */}
-      <Field label="반려동물 종류" error={errors.petType} required>
-        <div className="grid grid-cols-2 gap-3">
-          {options.petTypes.map((p) => (
-            <button
-              type="button"
-              key={p.id}
-              onClick={() => update({ petType: p.id })}
-              className={`rounded-xl border px-4 py-3 font-medium transition ${
-                form.petType === p.id
-                  ? 'border-brand-500 bg-brand-50 text-brand-700'
-                  : 'border-slate-200 text-slate-600 hover:border-slate-300'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
+    <div className="mx-auto max-w-2xl rounded-2xl border border-slate-100 bg-white p-6 sm:p-10 shadow-sm">
+      {/* 진행 바 */}
+      <div className="mb-8">
+        <div className="mb-2 flex items-center justify-between text-xs font-medium text-slate-400">
+          <span className="text-brand-600">
+            STEP {step + 1} <span className="text-slate-300">/ {STEPS.length}</span>
+          </span>
+          <span>{Math.round(progress)}%</span>
         </div>
-      </Field>
-
-      {/* 3. 나이 */}
-      <Field
-        label="나이 (개월 수)"
-        error={errors.ageMonths}
-        required
-        hint="만 나이를 개월로 환산해 입력해 주세요. 예: 2살 → 24"
-      >
-        <input
-          type="number"
-          inputMode="numeric"
-          min="0"
-          max="360"
-          value={form.ageMonths}
-          onChange={(e) => update({ ageMonths: e.target.value })}
-          placeholder="예: 24"
-          className="input"
-        />
-      </Field>
-
-      {/* 4. 주요 고민 (다중 선택) */}
-      <Field
-        label="주요 고민"
-        error={errors.concerns}
-        required
-        hint={`최대 ${MAX_CONCERNS}개까지 선택할 수 있어요. (${form.concerns.length}/${MAX_CONCERNS})`}
-      >
-        <div className="flex flex-wrap gap-2">
-          {options.concerns.map((c) => {
-            const active = form.concerns.includes(c.id);
-            const disabled = !active && form.concerns.length >= MAX_CONCERNS;
-            return (
-              <button
-                type="button"
-                key={c.id}
-                onClick={() => toggleConcern(c.id)}
-                disabled={disabled}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                  active
-                    ? 'border-brand-500 bg-brand-500 text-white'
-                    : 'border-slate-200 text-slate-600 hover:border-slate-300'
-                } ${disabled ? 'cursor-not-allowed opacity-40' : ''}`}
-              >
-                {c.label}
-              </button>
-            );
-          })}
+        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+          <div
+            className="h-full rounded-full bg-brand-500 transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
         </div>
-      </Field>
+      </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="mt-4 w-full rounded-xl bg-brand-500 py-4 font-semibold text-white shadow-lg shadow-brand-500/20 hover:bg-brand-600 disabled:opacity-60 transition"
-      >
-        {loading ? '분석 중...' : '맞춤 큐레이션 받기'}
-      </button>
+      {/* 질문 헤더 */}
+      <div className="mb-6 text-center">
+        <h3 className="text-2xl font-bold text-slate-900">{STEPS[step].title}</h3>
+        <p className="mt-2 text-sm text-slate-500">{STEPS[step].sub}</p>
+      </div>
 
-      {/* 입력 컴포넌트 공통 스타일 */}
-      <style>{`
-        .input {
-          width: 100%;
-          border-radius: 0.75rem;
-          border: 1px solid #e2e8f0;
-          padding: 0.75rem 1rem;
-          outline: none;
-          transition: border-color .15s, box-shadow .15s;
-        }
-        .input:focus {
-          border-color: var(--color-brand-500);
-          box-shadow: 0 0 0 3px var(--color-brand-100);
-        }
-      `}</style>
-    </form>
+      {/* 단계별 본문 */}
+      <div className="min-h-[220px]">
+        {stepKey === 'species' && (
+          <SpeciesStep
+            options={options.petTypes}
+            form={form}
+            onPick={(id) => update({ petType: id })}
+            onName={(petName) => update({ petName })}
+          />
+        )}
+
+        {stepKey === 'age' && (
+          <AgeStep form={form} onChange={(ageMonths) => update({ ageMonths })} onEnter={goNext} />
+        )}
+
+        {stepKey === 'concerns' && (
+          <ConcernStep options={options.concerns} form={form} onToggle={toggleConcern} />
+        )}
+      </div>
+
+      {error && (
+        <p className="mt-4 text-center text-sm font-medium text-red-500">{error}</p>
+      )}
+
+      {/* 내비게이션 */}
+      <div className="mt-8 flex gap-3">
+        {step > 0 && (
+          <button
+            type="button"
+            onClick={goPrev}
+            className="rounded-xl border border-slate-200 px-6 py-3.5 font-semibold text-slate-600 hover:bg-slate-50 transition"
+          >
+            이전
+          </button>
+        )}
+        {!isLast ? (
+          <button
+            type="button"
+            onClick={goNext}
+            className="flex-1 rounded-xl bg-brand-500 py-3.5 font-semibold text-white shadow-lg shadow-brand-500/20 hover:bg-brand-600 transition"
+          >
+            다음
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={loading}
+            className="flex-1 rounded-xl bg-brand-500 py-3.5 font-semibold text-white shadow-lg shadow-brand-500/20 hover:bg-brand-600 disabled:opacity-60 transition"
+          >
+            {loading ? '분석 중...' : '맞춤 큐레이션 받기'}
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 
-// 라벨 + 에러 메시지 + 힌트를 묶는 재사용 필드 래퍼
-function Field({ label, children, error, hint, required, optional }) {
+// ── STEP 1: 종 선택 (SVG 아이콘) + 이름 ──
+function SpeciesStep({ options, form, onPick, onName }) {
   return (
-    <div className="mb-6">
-      <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700">
-        {label}
-        {required && <span className="text-brand-500">*</span>}
-        {optional && <span className="text-xs font-normal text-slate-400">(선택)</span>}
-      </label>
-      {children}
-      {hint && !error && <p className="mt-1.5 text-xs text-slate-400">{hint}</p>}
-      {error && <p className="mt-1.5 text-xs font-medium text-red-500">{error}</p>}
+    <div>
+      <div className="grid grid-cols-2 gap-4">
+        {options.map((p) => {
+          const Icon = PET_ICONS[p.id];
+          const active = form.petType === p.id;
+          return (
+            <button
+              type="button"
+              key={p.id}
+              onClick={() => onPick(p.id)}
+              className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-6 transition ${
+                active
+                  ? 'border-brand-500 bg-brand-50 text-brand-600'
+                  : 'border-slate-200 text-slate-400 hover:border-slate-300'
+              }`}
+            >
+              {Icon ? <Icon className="h-16 w-16" /> : <span className="text-4xl">🐾</span>}
+              <span
+                className={`text-base font-bold ${active ? 'text-brand-700' : 'text-slate-700'}`}
+              >
+                {p.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-6">
+        <label className="mb-2 block text-sm font-semibold text-slate-700">
+          이름 <span className="text-xs font-normal text-slate-400">(선택)</span>
+        </label>
+        <input
+          type="text"
+          value={form.petName}
+          onChange={(e) => onName(e.target.value)}
+          placeholder="예: 콩이"
+          className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── STEP 2: 나이 (빠른 선택 + 직접 입력) ──
+function AgeStep({ form, onChange, onEnter }) {
+  return (
+    <div>
+      <div className="flex flex-wrap justify-center gap-2">
+        {AGE_PRESETS.map((a) => (
+          <button
+            type="button"
+            key={a.months}
+            onClick={() => onChange(String(a.months))}
+            className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition ${
+              String(a.months) === String(form.ageMonths)
+                ? 'border-brand-500 bg-brand-500 text-white'
+                : 'border-slate-200 text-slate-600 hover:border-slate-300'
+            }`}
+          >
+            {a.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-8 text-center">
+        <p className="mb-3 text-sm text-slate-400">또는 직접 입력 (개월 수)</p>
+        <div className="flex items-center justify-center gap-2">
+          <input
+            type="number"
+            inputMode="numeric"
+            min="0"
+            max="360"
+            value={form.ageMonths}
+            onChange={(e) => onChange(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && onEnter()}
+            placeholder="24"
+            className="w-32 rounded-xl border border-slate-200 px-4 py-3 text-center text-lg font-bold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+          />
+          <span className="text-slate-500">개월</span>
+        </div>
+        <p className="mt-3 text-xs text-slate-400">예: 2살 → 24개월</p>
+      </div>
+    </div>
+  );
+}
+
+// ── STEP 3: 주요 고민 (아이콘 칩, 최대 3개) ──
+function ConcernStep({ options, form, onToggle }) {
+  return (
+    <div>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {options.map((c) => {
+          const active = form.concerns.includes(c.id);
+          const disabled = !active && form.concerns.length >= MAX_CONCERNS;
+          return (
+            <button
+              type="button"
+              key={c.id}
+              onClick={() => onToggle(c.id)}
+              disabled={disabled}
+              className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-4 transition ${
+                active
+                  ? 'border-brand-500 bg-brand-50'
+                  : 'border-slate-200 hover:border-slate-300'
+              } ${disabled ? 'cursor-not-allowed opacity-40' : ''}`}
+            >
+              <span className="text-3xl">{CONCERN_EMOJI[c.id] ?? '•'}</span>
+              <span
+                className={`text-sm font-semibold ${
+                  active ? 'text-brand-700' : 'text-slate-600'
+                }`}
+              >
+                {c.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <p className="mt-4 text-center text-xs text-slate-400">
+        선택됨 {form.concerns.length} / {MAX_CONCERNS}
+      </p>
     </div>
   );
 }
